@@ -11,10 +11,18 @@ const gif = document.getElementById("loading-gif");
 let data = [];
 let dataMonth = [];
 const studentTotals = {};
+fileInput.addEventListener("click", () => {
+  gif.style.display = "none";
+});
 
 fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   const reader = new FileReader();
+  if (file.name !== "absente.csv") {
+    alert(`Puteți încărca doar fișierul care se numeste:"absente.csv"!`);
+    return;
+  }
+
   reader.readAsText(file);
   reader.onload = (e) => {
     const csv = e.target.result;
@@ -46,7 +54,7 @@ fileInput.addEventListener("change", (e) => {
         studentTotals[studentName].notMotivated++;
       }
     });
-    gif.style.display = "none";
+
     renderTable();
     populateSelect(elevSelect, 0);
     populateSelect(monthSelect, 1);
