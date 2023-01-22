@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CSV Table</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div class="fileUpload" id="hide-input">
+      <input type="file" class="upload" id="fileInput" />
+      <span>Încarcă fișierul</span>
+    </div>
+
+    <img id="loading-gif" src="img/loading.gif" alt="Loading..." />
+
+    <table id="data-table-totals" class="hidden">
+      <thead>
+        <tr>
+          <th>Nr.</th>
+          <th>Nume</th>
+          <th>Absente motivate</th>
+          <th>Absente nemotivate</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- data from csv will be inserted here -->
+      </tbody>
+    </table>
+    <br />
+    <div id="buttons" class="hidden">
+      <select class="btn" id="elev-select">
+        <option value="all">Elevi</option>
+      </select>
+      <select class="btn" id="month-select">
+        <option value="all">Data</option>
+      </select>
+      <select class="btn" id="motivata-select">
+        <option value="all">Motivată</option>
+      </select>
+      <select class="btn" id="materie-select">
+        <option value="all">Materie</option>
+      </select>
+      <button id="btn-reset" class="btn">Resetează</button>
+    </div>
+
+    <table id="data-table" class="hidden">
+      <thead>
+        <tr>
+          <th>Nr.</th>
+          <th>Elev</th>
+          <th>Data</th>
+          <th>Motivata</th>
+          <th>Materie</th>
+          <th>Clasa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- data from csv will be inserted here -->
+      </tbody>
+    </table>
+    <script src="app.js"></script>
+  </body>
+</html>

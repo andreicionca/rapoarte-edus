@@ -1,0 +1,143 @@
+html {
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+  font-size: 16px;
+  background-color: #e8e8e8;
+}
+.hidden {
+  display: none;
+}
+
+#data-table-totals {
+  width: 60%;
+  border: 1px solid #ddd;
+
+  text-align: left;
+  background-color: #f2f2f2;
+  margin: auto;
+}
+
+#data-table-totals tr:hover {
+  background-color: #ddd;
+}
+
+#data-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  background-color: #f2f2f2;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: #04aa6d;
+  color: white;
+}
+
+.fileUpload {
+  background: #373f3f;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  color: #fff;
+  font-size: 1em;
+  font-weight: bold;
+  margin: 1.25em auto; /*20px/16px 0*/
+  overflow: hidden;
+  padding: 0.875em; /*14px/16px*/
+  position: relative;
+  text-align: center;
+  width: 120px;
+  cursor: pointer;
+}
+.fileUpload:hover,
+.fileUpload:active,
+.fileUpload:focus {
+  background: #04aa6d;
+  cursor: pointer;
+}
+.fileUpload input.upload {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  width: 148px;
+  height: 46px;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  position: fixed;
+  right: 100%;
+  bottom: 100%;
+}
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+#buttons {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+}
+
+select,
+button {
+  padding: 12px 10px;
+  margin: 8px 2px;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn {
+  background-color: #f3f7fe;
+  color: #04aa6d;
+  border: none;
+  border-radius: 8px;
+  width: 180px;
+  height: 45px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background-color: #04aa6d;
+  box-shadow: 0 0 0 5px rgb(4, 170, 109, 0.5);
+  color: #fff;
+}
+
+#btn-reset {
+  color: rgb(135, 98, 98);
+}
+
+#btn-reset:hover {
+  background-color: rgb(135, 98, 98);
+  box-shadow: 0 0 0 5px rgb(135, 98, 98, 0.5);
+  color: #fff;
+}
+
+#loading-gif {
+  width: 75%;
+  margin: auto;
+  display: block;
+  box-shadow: #373f3f 0px 0px 10px;
+}
