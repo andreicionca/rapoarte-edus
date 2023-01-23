@@ -10,55 +10,89 @@
       <input type="file" class="upload" id="fileInput" />
       <span>Încarcă fișierul</span>
     </div>
-
-    <img id="loading-gif" src="img/loading.gif" alt="Loading..." />
-
-    <table id="data-table-totals" class="hidden">
-      <thead>
-        <tr>
-          <th>Nr.</th>
-          <th>Nume</th>
-          <th>Absente motivate</th>
-          <th>Absente nemotivate</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- data from csv will be inserted here -->
-      </tbody>
-    </table>
-    <br />
-    <div id="buttons" class="hidden">
-      <select class="btn" id="elev-select">
-        <option value="all">Elevi</option>
-      </select>
-      <select class="btn" id="month-select">
-        <option value="all">Data</option>
-      </select>
-      <select class="btn" id="motivata-select">
-        <option value="all">Motivată</option>
-      </select>
-      <select class="btn" id="materie-select">
-        <option value="all">Materie</option>
-      </select>
-      <button id="btn-reset" class="btn">Resetează</button>
+    <div id="spinner" class="spinner center">
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
+      <div class="spinner-blade"></div>
     </div>
+    <img id="loading-gif" src="img/loading.gif" alt="Loading..." />
+    <div id="show-tables" class="hidden">
+      <div id="buttons">
+        <label for="sort-options">Sortează tabelul clasei după:</label>
+        <select class="btn large-btn" id="sort-options">
+          <option style="display: none"></option>
+          <option value="motivate">Cele mai multe absențe motivate</option>
+          <option value="nemotivate">Cele mai multe absențe nemotivate</option>
+          <option value="total">TOTAL absențe</option>
+        </select>
+        <button id="tabel-total-reset" class="btn">Resetează</button>
+      </div>
 
-    <table id="data-table" class="hidden">
-      <thead>
-        <tr>
-          <th>Nr.</th>
-          <th>Elev</th>
-          <th>Data</th>
-          <th>Motivata</th>
-          <th>Materie</th>
-          <th>Clasa</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- data from csv will be inserted here -->
-      </tbody>
-    </table>
+      <table id="data-table-totals">
+        <thead>
+          <tr>
+            <th>Nr.</th>
+            <th>Nume</th>
+            <th>Absente motivate</th>
+            <th>Absente nemotivate</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- data from csv will be inserted here -->
+        </tbody>
+      </table>
+      <br />
+      <div id="buttons">
+        <select class="btn" id="elev-select">
+          <option value="all">Elevi</option>
+        </select>
+        <select class="btn" id="month-select">
+          <option value="all">Data</option>
+        </select>
+        <select class="btn" id="motivata-select">
+          <option value="all">Motivată</option>
+        </select>
+        <select class="btn" id="materie-select">
+          <option value="all">Materie</option>
+        </select>
+        <button id="btn-reset" class="btn">Resetează</button>
+      </div>
+
+      <table id="data-table">
+        <thead>
+          <tr>
+            <th>Nr.</th>
+            <th>Elev</th>
+            <th>Data</th>
+            <th>Motivata</th>
+            <th>Materie</th>
+            <th>Clasa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- data from csv will be inserted here -->
+        </tbody>
+      </table>
+      <footer>
+        <p>
+          Toate aceste liste generează tabele pe baza fișierului "absente.csv"
+          pe care l-ați încărcat. <br />De fiecare dată când verificați
+          absențele elevilor trebuie să încărcați un nou fișier, adică să
+          descărcați fișierul "absente.csv" de pe site-ul app.edus.ro din
+          secțiunea rapoarte, apoi să îl încărcați aici.
+        </p>
+      </footer>
+    </div>
     <script src="app.js"></script>
   </body>
 </html>
