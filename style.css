@@ -181,6 +181,10 @@ footer {
   padding: 10px;
   line-height: 1.5;
 }
+footer a {
+  color: #fff;
+}
+
 .spinner {
   font-size: 28px;
   position: relative;
@@ -324,4 +328,11 @@ footer {
   bottom: 10px; /* adjust as needed */
   right: 30px; /* adjust as needed */
   z-index: 1; /* to ensure the button is on top of other elements */
+}
+
+#msg-display-date p {
+  font-size: 0, 9em;
+  margin-bottom: 10px;
+  text-align: center;
+  color: rgb(183, 179, 179);
 }

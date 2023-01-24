@@ -11,6 +11,7 @@ const gif = document.getElementById("loading-gif");
 const sortoptionsSelect = document.getElementById("sort-options");
 const tableTotalReset = document.getElementById("tabel-total-reset");
 const spinner = document.getElementById("spinner");
+const msgDisplayDate = document.getElementById("msg-display-date");
 
 let data = [];
 let dataMonth = [];
@@ -28,6 +29,24 @@ fileInput.addEventListener("click", () => {
 
 fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
+  const date = new Date(file.lastModified);
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+    timezone: "UTC",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  };
+  const romanianDate = date.toLocaleDateString("ro-RO", options);
+
+  console.log(
+    `Fisierul "absente.csv" pe care tocmai l-ați incărcat aici a fost descărcat de pe Edus ${romanianDate}`
+  );
+  msgDisplayDate.innerHTML = `<p>Fișierul "absente.csv", pe care tocmai l-ați incărcat aici, a fost descărcat de pe Edus <strong>${romanianDate}</strong></p>`;
+
   const reader = new FileReader();
   if (file.name !== "absente.csv") {
     alert(`Puteți încărca doar fișierul care se numește "absente.csv"!`);
@@ -283,7 +302,7 @@ document
 function scrollToNextTable() {
   if (!nextTableReached) {
     document
-      .getElementById("data-table")
+      .getElementById("elev-select")
       .scrollIntoView({ behavior: "smooth" });
     nextTableReached = true;
     document.getElementById(
