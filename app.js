@@ -19,14 +19,20 @@ const studentTotals = [];
 let studentTotalsOriginal;
 spinner.style.display = "none";
 
+let fileInputClicked = false;
+
 fileInput.addEventListener("click", () => {
+  if (fileInputClicked) {
+    location.reload();
+    return;
+  }
+  fileInputClicked = true;
   spinner.style.display = "block";
   gif.style.display = "none";
   setTimeout(() => {
     spinner.style.display = "none";
   }, 3000);
 });
-
 fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   const date = new Date(file.lastModified);
