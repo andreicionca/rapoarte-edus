@@ -5,6 +5,7 @@ const elevSelect = document.getElementById("elev-select");
 const monthSelect = document.getElementById("month-select");
 const motivataSelect = document.getElementById("motivata-select");
 const materieSelect = document.getElementById("materie-select");
+const clasaSelect = document.getElementById("clasa-select");
 const showAllTabels = document.getElementById("show-tables");
 const gif = document.getElementById("loading-gif");
 const sortoptionsSelect = document.getElementById("sort-options");
@@ -20,6 +21,9 @@ spinner.style.display = "none";
 fileInput.addEventListener("click", () => {
   spinner.style.display = "block";
   gif.style.display = "none";
+  setTimeout(() => {
+    spinner.style.display = "none";
+  }, 3000);
 });
 
 fileInput.addEventListener("change", (e) => {
@@ -72,6 +76,7 @@ fileInput.addEventListener("change", (e) => {
     populateSelect(monthSelect, 1);
     populateSelect(motivataSelect, 2);
     populateSelect(materieSelect, 3);
+    populateSelect(clasaSelect, 4);
     renderTableTotals(studentTotals);
     showAllTabels.style.display = "block";
   };
@@ -84,9 +89,9 @@ function renderTable(dataToRender = data) {
   dataTable.innerHTML = `
         <thead>
             <tr>
-                <th>Nr.</th>
+                <th class="col-centru">Nr.</th>
                 <th>Elev</th>
-                <th>Data</th>
+                <th class="col-centru">Data</th>
                 <th class="col-centru">Motivata</th>
                 <th>Materie</th>
                 <th>Clasa</th>
@@ -103,12 +108,13 @@ function renderTable(dataToRender = data) {
 
                 return `
                 <tr>
-                    <td>${studendCount[item[0]]}</td>
+                    <td class="col-centru">${studendCount[item[0]]}</td>
                     <td>${item[0]}</td>
-                    <td>${item[1]}</td>
+                    <td class="col-centru">${item[1]}</td>
                     <td class="col-centru">${item[2]}</td>
                     <td>${item[3]}</td>
                     <td>${item[4]}</td>
+
                 </tr>
             `;
               })
@@ -116,13 +122,14 @@ function renderTable(dataToRender = data) {
         </tbody>
     `;
 }
-const menuSelects = ["Elevi", "Data", "Motivată", "Materie"];
+const menuSelects = ["Elevi", "Data", "Motivată", "Materie", "Clasa"];
 const btnReset = document.getElementById("btn-reset");
 btnReset.addEventListener("click", () => {
   populateSelect(elevSelect, 0);
   populateSelect(monthSelect, 1);
   populateSelect(motivataSelect, 2);
   populateSelect(materieSelect, 3);
+  populateSelect(clasaSelect, 4);
   updateTable();
 });
 
@@ -144,6 +151,7 @@ elevSelect.addEventListener("change", updateTable);
 monthSelect.addEventListener("change", updateTable);
 motivataSelect.addEventListener("change", updateTable);
 materieSelect.addEventListener("change", updateTable);
+clasaSelect.addEventListener("change", updateTable);
 
 function updateTable() {
   let filteredData = data;
@@ -151,6 +159,7 @@ function updateTable() {
   const selectedMonth = monthSelect.value;
   const selectedMotivata = motivataSelect.value;
   const selectedMaterie = materieSelect.value;
+  const selectedClasa = clasaSelect.value;
 
   if (selectedElev !== "all") {
     filteredData = filteredData.filter((row) => row[0] === selectedElev);
@@ -170,17 +179,21 @@ function updateTable() {
   if (selectedMaterie !== "all") {
     filteredData = filteredData.filter((row) => row[3] === selectedMaterie);
   }
+  if (selectedClasa !== "all") {
+    filteredData = filteredData.filter(
+      (row) => row[4].trim() === selectedClasa.trim()
+    );
+  }
   renderTable(filteredData);
 }
 
 function renderTableTotals(dataToRender = studentTotals) {
-  console.log("rendering table totals");
   let count = 0;
   dataTableTotals.innerHTML = "";
   dataTableTotals.innerHTML = `
         <thead>
             <tr>
-                <th>Nr.</th>
+                <th class="col-centru">Nr.</th>
                 <th>Nume</th>
                 <th class="col-centru">Absente motivate</th>
                 <th class="col-centru">Absente nemotivate</th>
@@ -193,7 +206,7 @@ function renderTableTotals(dataToRender = studentTotals) {
                 count++;
                 return `
                 <tr>
-                    <td>${count}</td>
+                    <td class="col-centru">${count}</td>
                     <td>${student.name}</td>
                     <td class="col-centru">${student.motivated}</td>
                     <td class="col-centru">${student.notMotivated}</td>
@@ -236,7 +249,6 @@ sortoptionsSelect.addEventListener("change", () => {
 function sortTable(sortOption, dataToRender = studentTotals) {
   let sortedData;
 
-  console.log(dataToRender);
   switch (sortOption) {
     case "motivate":
       sortedData = dataToRender.sort((a, b) => b.motivated - a.motivated);
@@ -261,3 +273,29 @@ tableTotalReset.addEventListener("click", () => {
   const select = document.getElementById("sort-options");
   select.options[0].selected = true;
 });
+
+let nextTableReached = false;
+
+document
+  .getElementById("next-table-button")
+  .addEventListener("click", scrollToNextTable);
+
+function scrollToNextTable() {
+  if (!nextTableReached) {
+    document
+      .getElementById("data-table")
+      .scrollIntoView({ behavior: "smooth" });
+    nextTableReached = true;
+    document.getElementById(
+      "next-table-button"
+    ).innerHTML = ` <ion-icon name="arrow-up-outline"></ion-icon>`;
+  } else {
+    document
+      .getElementById("show-tables")
+      .scrollIntoView({ behavior: "smooth" });
+    nextTableReached = false;
+    document.getElementById(
+      "next-table-button"
+    ).innerHTML = ` <ion-icon name="arrow-down-outline"></ion-icon>`;
+  }
+}

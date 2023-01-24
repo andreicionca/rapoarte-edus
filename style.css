@@ -20,6 +20,10 @@ table .col-centru {
   text-align: center;
 }
 
+#data-table-totals th:nth-child(5) {
+  min-width: 120px;
+}
+
 #data-table-totals tr:hover {
   background-color: #ddd;
 }
@@ -312,4 +316,12 @@ footer {
   100% {
     background-color: transparent;
   }
+}
+
+#next-table-button {
+  cursor: pointer; /* to show a hand cursor on hover */
+  position: fixed; /* to position the button relative to the parent container */
+  bottom: 10px; /* adjust as needed */
+  right: 30px; /* adjust as needed */
+  z-index: 1; /* to ensure the button is on top of other elements */
 }

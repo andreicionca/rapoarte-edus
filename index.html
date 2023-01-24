@@ -4,6 +4,14 @@
     <title>Raport absente</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="icon" href="img/favicon.png" type="image/png" />
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
   </head>
   <body>
     <div class="fileUpload" id="hide-input">
@@ -26,6 +34,9 @@
     </div>
     <img id="loading-gif" src="img/loading.gif" alt="Loading..." />
     <div id="show-tables" class="hidden">
+      <button id="next-table-button">
+        <ion-icon name="arrow-down-outline"></ion-icon>
+      </button>
       <div id="buttons">
         <label for="sort-options">Sortează tabelul clasei după:</label>
         <select class="btn large-btn" id="sort-options">
@@ -53,6 +64,7 @@
       </table>
       <br />
       <div id="buttons">
+        <label for="sort-options">Selectează: </label>
         <select class="btn" id="elev-select">
           <option value="all">Elevi</option>
         </select>
@@ -64,6 +76,9 @@
         </select>
         <select class="btn" id="materie-select">
           <option value="all">Materie</option>
+        </select>
+        <select class="btn" id="clasa-select">
+          <option value="all">Clasa</option>
         </select>
         <button id="btn-reset" class="btn">Resetează</button>
       </div>
