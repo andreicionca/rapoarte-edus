@@ -33,6 +33,7 @@ fileInput.addEventListener("click", () => {
     spinner.style.display = "none";
   }, 3000);
 });
+
 fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   const date = new Date(file.lastModified);
@@ -47,64 +48,65 @@ fileInput.addEventListener("change", (e) => {
     second: "numeric",
   };
   const romanianDate = date.toLocaleDateString("ro-RO", options);
+  msgDisplayDate.innerHTML = `<p>Fișierul  pe care tocmai l-ați incărcat aici, a fost descărcat de pe Edus <strong>${romanianDate}</strong></p>`;
 
-  console.log(
-    `Fisierul "absente.csv" pe care tocmai l-ați incărcat aici a fost descărcat de pe Edus ${romanianDate}`
-  );
-  msgDisplayDate.innerHTML = `<p>Fișierul "absente.csv", pe care tocmai l-ați incărcat aici, a fost descărcat de pe Edus <strong>${romanianDate}</strong></p>`;
+  // added code starts here
+  const zip = new JSZip();
+  zip
+    .loadAsync(file)
+    .then((zip) => {
+      return zip.file("absente.csv").async("blob");
+    })
+    .then((blob) => {
+      const reader = new FileReader();
+      reader.readAsText(blob);
+      reader.onload = (e) => {
+        const csv = e.target.result;
+        data = csv
+          .split("\n")
+          .slice(1, -1)
+          .map((row) => row.split(","));
+        dataMonth = data.map((row) =>
+          new Date(row[1].split("/").reverse().join("-")).toLocaleString(
+            "default",
+            { month: "short" }
+          )
+        );
 
-  const reader = new FileReader();
-  if (file.name !== "absente.csv") {
-    alert(`Puteți încărca doar fișierul care se numește "absente.csv"!`);
-    return;
-  }
+        data.forEach((row) => {
+          const studentName = row[0];
+          const isMotivated = row[2] === "Da";
 
-  reader.readAsText(file);
-  reader.onload = (e) => {
-    const csv = e.target.result;
-    data = csv
-      .split("\n")
-      .slice(1, -1)
-      .map((row) => row.split(","));
-    dataMonth = data.map((row) =>
-      new Date(row[1].split("/").reverse().join("-")).toLocaleString(
-        "default",
-        { month: "short" }
-      )
-    );
+          let student = studentTotals.find((s) => s.name === studentName);
+          if (!student) {
+            student = {
+              name: studentName,
+              motivated: 0,
+              notMotivated: 0,
+            };
+            studentTotals.push(student);
+          }
 
-    data.forEach((row) => {
-      const studentName = row[0];
-      const isMotivated = row[2] === "Da";
+          if (isMotivated) {
+            student.motivated++;
+          } else {
+            student.notMotivated++;
+          }
+          student.total = student.motivated + student.notMotivated;
+        });
+        studentTotalsOriginal = [...studentTotals];
 
-      let student = studentTotals.find((s) => s.name === studentName);
-      if (!student) {
-        student = {
-          name: studentName,
-          motivated: 0,
-          notMotivated: 0,
-        };
-        studentTotals.push(student);
-      }
-
-      if (isMotivated) {
-        student.motivated++;
-      } else {
-        student.notMotivated++;
-      }
-      student.total = student.motivated + student.notMotivated;
+        renderTable();
+        populateSelect(elevSelect, 0);
+        populateSelect(monthSelect, 1);
+        populateSelect(motivataSelect, 2);
+        populateSelect(materieSelect, 3);
+        populateSelect(clasaSelect, 4);
+        renderTableTotals(studentTotals);
+        showAllTabels.style.display = "block";
+      };
     });
-    studentTotalsOriginal = [...studentTotals];
-
-    renderTable();
-    populateSelect(elevSelect, 0);
-    populateSelect(monthSelect, 1);
-    populateSelect(motivataSelect, 2);
-    populateSelect(materieSelect, 3);
-    populateSelect(clasaSelect, 4);
-    renderTableTotals(studentTotals);
-    showAllTabels.style.display = "block";
-  };
+  // added code ends here
 });
 
 function renderTable(dataToRender = data) {
