@@ -66,15 +66,17 @@ th {
   padding: 0.875em; /*14px/16px*/
   position: relative;
   text-align: center;
-  width: 120px;
+  width: 150px;
   cursor: pointer;
 }
+
 .fileUpload:hover,
 .fileUpload:active,
 .fileUpload:focus {
   background: #04aa6d;
   cursor: pointer;
 }
+
 .fileUpload input.upload {
   position: absolute;
   top: 0;
