@@ -36,15 +36,15 @@ fileInput.addEventListener("click", () => {
 
 fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
-  if (file.type !== "application/x-zip-compressed") {
-    alert(
-      `Acesta nu este un fișier zip! Vă rugăm să încărcați fișierul zip 
-"raport-complet" descărcat de pe site-ul app.edus.ro! 
-Urmați pașii din tutorial.`
-    );
-    // location.reload();
-    // return;
-  }
+  //   if (file.type !== "application/x-zip-compressed") {
+  //     alert(
+  //       `Acesta nu este un fișier zip! Vă rugăm să încărcați fișierul zip
+  // "raport-complet" descărcat de pe site-ul app.edus.ro!
+  // Urmați pașii din tutorial.`
+  //     );
+  //     location.reload();
+  //     return;
+  //   }
 
   const date = new Date(file.lastModified);
   const options = {
