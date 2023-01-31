@@ -8,6 +8,17 @@ html {
   display: none;
 }
 
+#grades-table {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+  background-color: #f2f2f2;
+}
+
 #data-table-totals {
   width: 60%;
   border: 1px solid #ddd;

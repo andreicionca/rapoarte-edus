@@ -45,6 +45,27 @@
       <button id="next-table-button">
         <ion-icon name="arrow-down-outline"></ion-icon>
       </button>
+      <label for="student-grades">Selectează elevul</label>
+      <select id="student-grades">
+        <option style="display: none"></option>
+      </select>
+      <table id="grades-table">
+        <thead>
+          <tr>
+            <th id="studentName"></th>
+            <th>Nota</th>
+            <th>Nota</th>
+            <th>Nota</th>
+            <th>Nota</th>
+            <th>Nota</th>
+            <th>Nota</th>
+            <th>Nota</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- data from csv will be inserted here -->
+        </tbody>
+      </table>
       <div id="buttons">
         <label for="sort-options">Sortează tabelul clasei după:</label>
         <select class="btn large-btn" id="sort-options">
@@ -119,6 +140,6 @@
         </p>
       </footer>
     </div>
-    <script src="app.js"></script>
+    <script src="testing.js"></script>
   </body>
 </html>
