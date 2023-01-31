@@ -42,8 +42,8 @@ fileInput.addEventListener("change", (e) => {
 "raport-complet" descărcat de pe site-ul app.edus.ro! 
 Urmați pașii din tutorial.`
     );
-    location.reload();
-    return;
+    // location.reload();
+    // return;
   }
 
   const date = new Date(file.lastModified);
