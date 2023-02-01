@@ -18,6 +18,19 @@ html {
   border-collapse: collapse;
   background-color: #f2f2f2;
 }
+#grades-table td,
+#grades-table th {
+  border: 1px solid rgb(131, 125, 125);
+  border-collapse: collapse;
+}
+
+#grades-table tbody tr:nth-child(odd) {
+  background-color: #e9ecf0;
+}
+
+#grades-table tbody tr:hover {
+  background-color: #ddd;
+}
 
 #data-table-totals {
   width: 60%;
@@ -47,7 +60,6 @@ table .col-centru {
 thead {
   position: sticky;
   top: 0;
-  background-color: #f2f2f2;
 }
 
 th,
@@ -169,6 +181,12 @@ button {
   width: 300px;
 }
 label[for="sort-options"] {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+label[for="student-grades"] {
   font-size: 1.2em;
   font-weight: bold;
   margin-bottom: 10px;
@@ -348,4 +366,38 @@ footer a {
   margin-bottom: 10px;
   text-align: center;
   color: rgb(183, 179, 179);
+}
+
+#prevButton {
+  background-color: #04aa6d;
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 5px #04aa6d;
+  position: absolute;
+  left: 40px;
+  top: 65%;
+  transform: translateY(-50%);
+}
+
+#nextButton {
+  background-color: #04aa6d;
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 5px #04aa6d;
+  position: absolute;
+  right: 40px;
+  top: 65%;
+  transform: translateY(-50%);
+}
+
+#prevButton:hover {
+  border: 1px solid #04aa6d;
+}
+
+#nextButton:hover {
+  border: 1px solid #04aa6d;
+}
+
+.student-upper {
+  text-transform: uppercase;
 }

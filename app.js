@@ -1,3 +1,4 @@
+const numberofGradesCells = 12;
 const fileInput = document.getElementById("fileInput");
 const dataTable = document.getElementById("data-table");
 const dataTableTotals = document.getElementById("data-table-totals");
@@ -12,7 +13,11 @@ const sortoptionsSelect = document.getElementById("sort-options");
 const tableTotalReset = document.getElementById("tabel-total-reset");
 const spinner = document.getElementById("spinner");
 const msgDisplayDate = document.getElementById("msg-display-date");
+const selectStudentGradesElement = document.querySelector("#student-grades");
+const gradesTable = document.getElementById("grades-table");
 
+let discipline = [];
+const gradesData = {};
 let data = [];
 let dataMonth = [];
 const studentTotals = [];
@@ -65,21 +70,29 @@ fileInput.addEventListener("change", (e) => {
   zip
     .loadAsync(file)
     .then((zip) => {
-      if (!zip.file("absente.csv")) {
-        alert(
-          `Folderul zip nu conține fișierul "absente.csv"! Vă rugăm să încărcați folderul corect!`
-        );
-        location.reload();
-        return;
-      }
-      return zip.file("absente.csv").async("blob");
+      // if (
+      //   !zip.file("absente.csv") ||
+      //   !zip.file("orar.csv") ||
+      //   !zip.file("note.csv")
+      // ) {
+      //   alert(
+      //     `Folderul zip nu conține fișierele din raport-general.zip! Vă rugăm să încărcați folderul corect!`
+      //   );
+      //   location.reload();
+      //   return;
+      // }
+      return Promise.all([
+        zip.file("absente.csv").async("blob"),
+        zip.file("orar.csv").async("blob"),
+        zip.file("note.csv").async("blob"),
+      ]);
     })
-    .then((blob) => {
-      const reader = new FileReader();
-      reader.readAsText(blob);
-      reader.onload = (e) => {
-        const csv = e.target.result;
-        data = csv
+    .then(([absenteBlob, orarBlob, noteBlob]) => {
+      const absenteReader = new FileReader();
+      absenteReader.readAsText(absenteBlob);
+      absenteReader.onload = (e) => {
+        const absenteCsv = e.target.result;
+        data = absenteCsv
           .split("\n")
           .slice(1, -1)
           .map((row) => row.split(","));
@@ -122,9 +135,114 @@ fileInput.addEventListener("change", (e) => {
         renderTableTotals(studentTotals);
         showAllTabels.style.display = "block";
       };
+      const orarReader = new FileReader();
+      orarReader.readAsText(orarBlob);
+      orarReader.onload = (e) => {
+        const orarCsv = e.target.result;
+        const orarRows = orarCsv.split("\n").slice(1, -1);
+        const orarData = orarRows.map((row) => row.split(",")[3]);
+
+        discipline = Array.from(new Set(orarData)).sort();
+        console.log(discipline);
+      };
+      const noteReader = new FileReader();
+      noteReader.readAsText(noteBlob);
+      noteReader.onload = (e) => {
+        const noteCsv = e.target.result;
+        const noteRows = noteCsv.split("\n").slice(1, -1);
+        const noteData = noteRows.map((row) => [
+          row.split(",")[0],
+          row.split(",")[1],
+          row.split(",")[3],
+        ]);
+
+        noteData.forEach((row) => {
+          const [studentName, grade, disciplineName] = row;
+          if (!gradesData[studentName]) {
+            gradesData[studentName] = {};
+            console.log(discipline);
+            discipline.forEach((disciplin) => {
+              gradesData[studentName][disciplin] = [];
+            });
+          }
+          gradesData[studentName][disciplineName].push(grade);
+        });
+        renderStudentGradesTable();
+        populateStudentSelect();
+        //end
+      };
     });
+
   // added code ends here
 });
+
+function populateStudentSelect() {
+  Object.keys(gradesData).forEach((studentName) => {
+    const optionElement = document.createElement("option");
+    optionElement.value = studentName;
+    optionElement.textContent = studentName;
+    selectStudentGradesElement.appendChild(optionElement);
+  });
+}
+
+function renderStudentGradesTable(gradesDataToRender = gradesData) {
+  const firstStudentGrades = Object.keys(gradesDataToRender)[0];
+
+  let tableGradesCols = "";
+  for (let i = 0; i < numberofGradesCells; i++) {
+    tableGradesCols += `<th class="col-centru">Nota</th>`;
+  }
+
+  gradesTable.innerHTML = "";
+  gradesTable.innerHTML = `
+          <thead>
+            <tr>
+              <th class="student-upper">${firstStudentGrades}</th>
+              ${tableGradesCols}
+            </tr>
+          </thead>
+          <tbody>
+         ${Object.keys(gradesDataToRender[firstStudentGrades])
+           .map((discipline) => {
+             let tableGradesRows = `<td>${discipline}</td>`;
+             for (let i = 0; i < numberofGradesCells; i++) {
+               tableGradesRows += `<td class="col-centru">${
+                 gradesDataToRender[firstStudentGrades][discipline][i] || ""
+               }</td>`;
+             }
+             return `<tr>${tableGradesRows}</tr>`;
+           })
+           .join("")}
+          </tbody>
+  
+  `;
+}
+selectStudentGradesElement.addEventListener("change", updateStudentGradesTable);
+
+const prevButton = document.querySelector("#prevButton");
+const nextButton = document.querySelector("#nextButton");
+
+prevButton.addEventListener("click", function () {
+  updateStudentGradesTable("prev");
+});
+
+nextButton.addEventListener("click", function () {
+  updateStudentGradesTable("next");
+});
+
+function updateStudentGradesTable(direction) {
+  let selectedIndex = selectStudentGradesElement.selectedIndex;
+  if (direction === "prev" && selectedIndex > 0) {
+    selectStudentGradesElement.selectedIndex = selectedIndex - 1;
+  } else if (
+    direction === "next" &&
+    selectedIndex < selectStudentGradesElement.options.length - 1
+  ) {
+    selectStudentGradesElement.selectedIndex = selectedIndex + 1;
+  }
+  const studentName = selectStudentGradesElement.value;
+  renderStudentGradesTable({ [studentName]: gradesData[studentName] });
+}
 
 function renderTable(dataToRender = data) {
   let studendCount = {};
