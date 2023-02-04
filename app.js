@@ -51,7 +51,10 @@ fileInput.addEventListener("change", (e) => {
   //     return;
   //   }
 
+  // 1. create a new Date object passing the lastModified property of the file as an argument
   const date = new Date(file.lastModified);
+
+  // 2. create an object with the options for formatting the date
   const options = {
     year: "numeric",
     month: "long",
@@ -62,7 +65,11 @@ fileInput.addEventListener("change", (e) => {
     minute: "numeric",
     second: "numeric",
   };
+
+  // 3. create a new variable with the Romanian date using the toLocaleDateString method
   const romanianDate = date.toLocaleDateString("ro-RO", options);
+
+  // 4. display the Romanian date using the innerHTML property
   msgDisplayDate.innerHTML = `<p>Fișierul  pe care tocmai l-ați incărcat aici, a fost descărcat de pe Edus <strong>${romanianDate}</strong></p>`;
 
   // added code starts here
@@ -143,7 +150,6 @@ fileInput.addEventListener("change", (e) => {
         const orarData = orarRows.map((row) => row.split(",")[3]);
 
         discipline = Array.from(new Set(orarData)).sort();
-        console.log(discipline);
       };
       const noteReader = new FileReader();
       noteReader.readAsText(noteBlob);
@@ -160,7 +166,6 @@ fileInput.addEventListener("change", (e) => {
           const [studentName, grade, disciplineName] = row;
           if (!gradesData[studentName]) {
             gradesData[studentName] = {};
-            console.log(discipline);
             discipline.forEach((disciplin) => {
               gradesData[studentName][disciplin] = [];
             });
