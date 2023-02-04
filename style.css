@@ -13,7 +13,7 @@ html {
   margin: auto;
   text-align: center;
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   border: 1px solid #ddd;
   border-collapse: collapse;
   background-color: #f2f2f2;
@@ -30,6 +30,9 @@ html {
 
 #grades-table tbody tr:hover {
   background-color: #ddd;
+}
+#grades-table th:nth-child(1) {
+  width: 39%;
 }
 
 #data-table-totals {
@@ -403,4 +406,24 @@ footer a {
 
 .student-upper {
   text-transform: uppercase;
+}
+
+#student-detail-msg {
+  box-sizing: border-box;
+  width: 80%;
+  margin: auto;
+  border: 1px solid rgb(131, 125, 125);
+  border-top: none;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  color: #000;
+  font-weight: 600;
+}
+.student-msg {
+  margin: 0;
+  padding: 10px 5px;
+}
+#student-msg-date {
+  padding-right: 30px;
 }

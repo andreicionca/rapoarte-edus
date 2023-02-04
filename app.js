@@ -1,4 +1,4 @@
-const numberofGradesCells = 12;
+const numberofGradesCells = 10;
 const fileInput = document.getElementById("fileInput");
 const dataTable = document.getElementById("data-table");
 const dataTableTotals = document.getElementById("data-table-totals");
@@ -23,6 +23,7 @@ let dataMonth = [];
 const studentTotals = [];
 let studentTotalsOriginal;
 spinner.style.display = "none";
+let gradesTableDate;
 
 let fileInputClicked = false;
 
@@ -65,10 +66,14 @@ fileInput.addEventListener("change", (e) => {
     minute: "numeric",
     second: "numeric",
   };
-
+  const optionsday = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
   // 3. create a new variable with the Romanian date using the toLocaleDateString method
   const romanianDate = date.toLocaleDateString("ro-RO", options);
-
+  gradesTableDate = date.toLocaleDateString("ro-RO", optionsday);
   // 4. display the Romanian date using the innerHTML property
   msgDisplayDate.innerHTML = `<p>Fișierul  pe care tocmai l-ați incărcat aici, a fost descărcat de pe Edus <strong>${romanianDate}</strong></p>`;
 
@@ -141,6 +146,9 @@ fileInput.addEventListener("change", (e) => {
         populateSelect(clasaSelect, 4);
         renderTableTotals(studentTotals);
         showAllTabels.style.display = "block";
+        document
+          .getElementById("grades-table")
+          .scrollIntoView({ behavior: "smooth" });
       };
       const orarReader = new FileReader();
       orarReader.readAsText(orarBlob);
@@ -190,6 +198,8 @@ function populateStudentSelect() {
   });
 }
 
+let studentMsgAbsente = document.getElementById("student-msg-absente");
+let studendMsgDate = document.getElementById("student-msg-date");
 function renderStudentGradesTable(gradesDataToRender = gradesData) {
   const firstStudentGrades = Object.keys(gradesDataToRender)[0];
 
@@ -221,6 +231,17 @@ function renderStudentGradesTable(gradesDataToRender = gradesData) {
           </tbody>
   
   `;
+  const student = studentTotalsOriginal.find(
+    (s) => s.name === firstStudentGrades
+  );
+  if (student) {
+    const stdMsg = `SITUAȚIA ABSENȚELOR: <span style="color:red">${student.notMotivated} absențe nemotivate,</span> <span style="color:#05c46b">${student.motivated} absențe motivate,</span> <span style="color:#373f3f">TOTAL = ${student.total}</span>.`;
+    studentMsgAbsente.innerHTML = stdMsg;
+  } else {
+    const stdMsg = `SITUAȚIA ABSENȚELOR: <span style="color:red">0 absențe nemotivate,</span> <span style="color:#05c46b">0 absențe motivate,</span> <span style="color:#373f3f">TOTAL = 0</span>.`;
+    studentMsgAbsente.innerHTML = stdMsg;
+  }
+  studendMsgDate.textContent = gradesTableDate;
 }
 selectStudentGradesElement.addEventListener("change", updateStudentGradesTable);
 
@@ -245,8 +266,18 @@ function updateStudentGradesTable(direction) {
   ) {
     selectStudentGradesElement.selectedIndex = selectedIndex + 1;
   }
+
   const studentName = selectStudentGradesElement.value;
   renderStudentGradesTable({ [studentName]: gradesData[studentName] });
+  const student = studentTotalsOriginal.find((s) => s.name === studentName);
+  if (student) {
+    const stdMsg = `SITUAȚIA ABSENȚELOR: <span style="color:red">${student.notMotivated} absențe nemotivate,</span> <span style="color:#05c46b">${student.motivated} absențe motivate,</span> <span style="color:#373f3f">TOTAL = ${student.total}</span>.`;
+    studentMsgAbsente.innerHTML = stdMsg;
+  } else {
+    const stdMsg = `SITUAȚIA ABSENȚELOR: <span style="color:red">0 absențe nemotivate,</span> <span style="color:#05c46b">0 absențe motivate,</span> <span style="color:#373f3f">TOTAL = 0</span>.`;
+    studentMsgAbsente.innerHTML = stdMsg;
+  }
+  studendMsgDate.textContent = gradesTableDate;
 }
 
 function renderTable(dataToRender = data) {
