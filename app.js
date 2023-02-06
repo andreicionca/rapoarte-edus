@@ -178,7 +178,9 @@ fileInput.addEventListener("change", (e) => {
               gradesData[studentName][disciplin] = [];
             });
           }
-          gradesData[studentName][disciplineName].push(grade);
+          if (gradesData[studentName][disciplineName]) {
+            gradesData[studentName][disciplineName].push(grade);
+          }
         });
         renderStudentGradesTable();
         populateStudentSelect();
