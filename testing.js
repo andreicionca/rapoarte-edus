@@ -289,18 +289,9 @@ ${Object.keys(gradesDataToRender[firstStudentGrades])
   }
 
   const mediaHeader = document.getElementById("media-header");
-  mediaHeader.classList.add("tooltip");
-
-  // Create the custom tooltip element
-  const tooltipText = document.createElement("span");
-  tooltipText.className = "tooltiptext";
-  tooltipText.textContent = "Hover to see total average";
-  mediaHeader.appendChild(tooltipText);
-
-  // Update the tooltip content on mouseover
   mediaHeader.addEventListener("mouseover", () => {
     const totalAverage = calculateTotalMediaAverage();
-    tooltipText.textContent = `Media Generală: ${totalAverage}`;
+    mediaHeader.title = `Media Generala: ${totalAverage}`;
   });
 }
 selectStudentGradesElement.addEventListener("change", updateStudentGradesTable);
@@ -366,18 +357,9 @@ function updateStudentGradesTable(direction) {
   }
 
   const mediaHeader = document.getElementById("media-header");
-  mediaHeader.classList.add("tooltip");
-
-  // Create the custom tooltip element
-  const tooltipText = document.createElement("span");
-  tooltipText.className = "tooltiptext";
-  tooltipText.textContent = "Hover to see total average";
-  mediaHeader.appendChild(tooltipText);
-
-  // Update the tooltip content on mouseover
   mediaHeader.addEventListener("mouseover", () => {
     const totalAverage = calculateTotalMediaAverage();
-    tooltipText.textContent = `Media Generală: ${totalAverage}`;
+    mediaHeader.title = `Media Generala: ${totalAverage}`;
   });
 }
 
