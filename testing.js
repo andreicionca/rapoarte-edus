@@ -228,7 +228,7 @@ function renderStudentGradesTable(gradesDataToRender = gradesData) {
 <tbody>
 ${Object.keys(gradesDataToRender[firstStudentGrades])
   .map((discipline) => {
-    let tableGradesRows = `<td>${discipline}</td>`;
+    let tableGradesRows = `<td id="materie">${discipline}</td>`;
     for (let i = 0; i < numberofGradesCells; i++) {
       tableGradesRows += `<td class="col-centru">${
         gradesDataToRender[firstStudentGrades][discipline][i] || ""
@@ -247,7 +247,6 @@ ${Object.keys(gradesDataToRender[firstStudentGrades])
   })
   .join("")}
 </tbody>
-
 `;
 
   const student = studentTotalsOriginal.find(
@@ -261,38 +260,39 @@ ${Object.keys(gradesDataToRender[firstStudentGrades])
     studentMsgAbsente.innerHTML = stdMsg;
   }
   studendMsgDate.textContent = gradesTableDate;
+  const studentMsgAverage = document.getElementById("student-msg-average");
+  const mediaHeader = document.getElementById("media-header");
+  studentMsgAverage.style.width = `${
+    mediaHeader.getBoundingClientRect().width
+  }px`;
+  studentMsgAverage.textContent = calculateTotalMediaAverage();
 
   function calculateTotalMediaAverage() {
     const mediaCells = document.querySelectorAll(".media-cell");
+    const materieCells = document.querySelectorAll("#materie");
+
     let totalMedia = 0;
     let totalCompletedCells = 0;
-    let hasCorigent = false;
 
-    mediaCells.forEach((cell) => {
+    mediaCells.forEach((cell, index) => {
       const mediaValue = parseFloat(cell.textContent);
+
       if (!isNaN(mediaValue)) {
         if (mediaValue < 5) {
-          hasCorigent = true;
+          //add red color and after text (corigent)
+          materieCells[index].textContent += " (corigent)";
+          materieCells[index].style.color = "red";
         }
+
         totalMedia += mediaValue;
         totalCompletedCells++;
       }
     });
 
-    if (hasCorigent) {
-      return "corigent";
-    }
-
     return totalCompletedCells > 0
       ? (totalMedia / totalCompletedCells).toFixed(2)
       : 0;
   }
-
-  const mediaHeader = document.getElementById("media-header");
-  mediaHeader.addEventListener("mouseover", () => {
-    const totalAverage = calculateTotalMediaAverage();
-    mediaHeader.title = `Media Generala: ${totalAverage}`;
-  });
 }
 selectStudentGradesElement.addEventListener("change", updateStudentGradesTable);
 
@@ -329,38 +329,39 @@ function updateStudentGradesTable(direction) {
     studentMsgAbsente.innerHTML = stdMsg;
   }
   studendMsgDate.textContent = gradesTableDate;
+  const studentMsgAverage = document.getElementById("student-msg-average");
+  const mediaHeader = document.getElementById("media-header");
+  studentMsgAverage.style.width = `${
+    mediaHeader.getBoundingClientRect().width
+  }px`;
+  studentMsgAverage.textContent = calculateTotalMediaAverage();
 
   function calculateTotalMediaAverage() {
     const mediaCells = document.querySelectorAll(".media-cell");
+    const materieCells = document.querySelectorAll("#materie");
+
     let totalMedia = 0;
     let totalCompletedCells = 0;
-    let hasCorigent = false;
 
-    mediaCells.forEach((cell) => {
+    mediaCells.forEach((cell, index) => {
       const mediaValue = parseFloat(cell.textContent);
+
       if (!isNaN(mediaValue)) {
-        if (mediaValue < 5) {
-          hasCorigent = true;
-        }
+        // if (mediaValue < 5) {
+        //   //add red color and after text (corigent)
+        //   materieCells[index].textContent += " (corigent)";
+        //   materieCells[index].style.color = "red";
+        // }
+
         totalMedia += mediaValue;
         totalCompletedCells++;
       }
     });
 
-    if (hasCorigent) {
-      return "corigent";
-    }
-
     return totalCompletedCells > 0
       ? (totalMedia / totalCompletedCells).toFixed(2)
       : 0;
   }
-
-  const mediaHeader = document.getElementById("media-header");
-  mediaHeader.addEventListener("mouseover", () => {
-    const totalAverage = calculateTotalMediaAverage();
-    mediaHeader.title = `Media Generala: ${totalAverage}`;
-  });
 }
 
 function renderTable(dataToRender = data) {
