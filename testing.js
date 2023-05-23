@@ -1,4 +1,4 @@
-const numberofGradesCells = 12;
+const numberofGradesCells = 16;
 const fileInput = document.getElementById("fileInput");
 const dataTable = document.getElementById("data-table");
 const dataTableTotals = document.getElementById("data-table-totals");
@@ -209,7 +209,6 @@ function customRound(number) {
 
 function renderStudentGradesTable(gradesDataToRender = gradesData) {
   const firstStudentGrades = Object.keys(gradesDataToRender)[0];
-
   let tableGradesCols = "";
   for (let i = 0; i < numberofGradesCells; i++) {
     tableGradesCols += `<th class="col-centru">Nota</th>`;
@@ -288,6 +287,7 @@ ${Object.keys(gradesDataToRender[firstStudentGrades])
         totalCompletedCells++;
       }
     });
+    console.log(totalMedia, totalCompletedCells);
 
     return totalCompletedCells > 0
       ? (totalMedia / totalCompletedCells).toFixed(2)
