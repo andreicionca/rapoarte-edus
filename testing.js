@@ -8,7 +8,6 @@ const motivataSelect = document.getElementById("motivata-select");
 const materieSelect = document.getElementById("materie-select");
 const clasaSelect = document.getElementById("clasa-select");
 const showAllTabels = document.getElementById("show-tables");
-const gif = document.getElementById("loading-gif");
 const sortoptionsSelect = document.getElementById("sort-options");
 const tableTotalReset = document.getElementById("tabel-total-reset");
 const spinner = document.getElementById("spinner");
@@ -34,7 +33,6 @@ fileInput.addEventListener("click", () => {
   }
   fileInputClicked = true;
   spinner.style.display = "block";
-  gif.style.display = "none";
   setTimeout(() => {
     spinner.style.display = "none";
   }, 3000);
