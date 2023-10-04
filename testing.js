@@ -167,7 +167,7 @@ fileInput.addEventListener("change", (e) => {
         const noteData = noteRows.map((row) => [
           row.split(",")[0],
           row.split(",")[1],
-          row.split(",")[3],
+          row.split(",")[4],
         ]);
 
         noteData.forEach((row) => {
