@@ -3,6 +3,7 @@ html {
   box-sizing: border-box;
   font-size: 15px;
   background-color: #e8e8e8;
+  text-align: center;
 }
 .hidden {
   display: none;
@@ -83,7 +84,7 @@ th {
 }
 
 .fileUpload {
-  background: #373f3f;
+  background: #3498db;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
@@ -444,4 +445,33 @@ footer a {
   background-color: red;
   color: #fff;
   border-right: rgb(131, 125, 125) 1px solid;
+}
+
+.drop-area {
+  border: 2px dashed #3498db;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #3498db;
+  transition: border 0.3s ease-in-out;
+  margin: auto;
+  height: 450px;
+  cursor: alias;
+}
+
+.drop-area-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.drop-area.highlight {
+  border-color: #04aa6d;
+  color: #04aa6d;
+}
+
+.drop-area.highlight .drop-area-inner {
+  background-color: #04aa6d;
+  color: #fff;
 }

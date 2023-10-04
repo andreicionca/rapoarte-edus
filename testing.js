@@ -14,6 +14,35 @@ const spinner = document.getElementById("spinner");
 const msgDisplayDate = document.getElementById("msg-display-date");
 const selectStudentGradesElement = document.querySelector("#student-grades");
 const gradesTable = document.getElementById("grades-table");
+const dropArea = document.getElementById("drop-area");
+const hideInput = document.getElementById("hide-input");
+
+// Prevent default behavior for drag-and-drop events
+["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+  dropArea.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+// Highlight the drop area when a file is dragged over it
+["dragenter", "dragover"].forEach((eventName) => {
+  dropArea.addEventListener(eventName, highlight, false);
+});
+
+["dragleave", "drop"].forEach((eventName) => {
+  dropArea.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight() {
+  dropArea.classList.add("highlight");
+}
+
+function unhighlight() {
+  dropArea.classList.remove("highlight");
+}
 
 let discipline = [];
 const gradesData = {};
@@ -38,18 +67,24 @@ fileInput.addEventListener("click", () => {
   }, 3000);
 });
 
-fileInput.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  //   if (file.type !== "application/x-zip-compressed") {
-  //     alert(
-  //       `Acesta nu este un fișier zip! Vă rugăm să încărcați fișierul zip
-  // "raport-complet" descărcat de pe site-ul app.edus.ro!
-  // Urmați pașii din tutorial.`
-  //     );
-  //     location.reload();
-  //     return;
-  //   }
+let file;
+// Handle dropped files
+dropArea.addEventListener("drop", handleDrop, false);
+function handleDrop(e) {
+  e.preventDefault();
+  file = e.dataTransfer.files[0];
+  hideInput.style.display = "none";
+  handleFile(file);
+}
 
+//handle file input
+fileInput.addEventListener("change", (e) => {
+  file = e.target.files[0];
+  hideInput.style.display = "none";
+  handleFile(file);
+});
+
+function handleFile(file) {
   // 1. create a new Date object passing the lastModified property of the file as an argument
   const date = new Date(file.lastModified);
 
@@ -187,7 +222,7 @@ fileInput.addEventListener("change", (e) => {
     });
 
   // added code ends here
-});
+}
 
 function populateStudentSelect() {
   Object.keys(gradesData).forEach((studentName) => {

@@ -21,10 +21,29 @@
     ></script>
   </head>
   <body>
-    <div class="fileUpload" id="hide-input">
-      <input type="file" class="upload" id="fileInput" />
-      <span>Încarcă folderul</span>
+    <div id="hide-input">
+      <h1>Raport absențe</h1>
+      <p>
+        Încarcă folderul
+        <span style="text-decoration: underline">raport-complet.zip</span>
+        descărcat de pe platforma Edus.ro pentru a vedea tabelul cu notele și
+        absențele elevilor.
+      </p>
+      <div class="fileUpload">
+        <input type="file" class="upload" id="fileInput" />
+        <span>Încarcă folderul</span>
+      </div>
+      <div class="drop-area" id="drop-area">
+        <div class="drop-area-inner">
+          <span
+            >sau poți trage aici folderul
+            <span style="text-decoration: underline">raport-complet.zip</span>
+            pentru a se încărca tabelul cu note și absențe.</span
+          >
+        </div>
+      </div>
     </div>
+
     <div id="spinner" class="spinner center">
       <div class="spinner-blade"></div>
       <div class="spinner-blade"></div>
