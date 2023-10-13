@@ -1,4 +1,4 @@
-const numberofGradesCells = 16;
+const numberofGradesCells = 12;
 const coloanaNote = 4;
 const fileInput = document.getElementById("fileInput");
 const dataTable = document.getElementById("data-table");
