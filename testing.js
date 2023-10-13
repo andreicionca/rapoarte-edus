@@ -1,4 +1,5 @@
 const numberofGradesCells = 16;
+const coloanaNote = 4;
 const fileInput = document.getElementById("fileInput");
 const dataTable = document.getElementById("data-table");
 const dataTableTotals = document.getElementById("data-table-totals");
@@ -46,6 +47,7 @@ function unhighlight() {
 
 let discipline = [];
 const gradesData = {};
+
 let data = [];
 let dataMonth = [];
 const studentTotals = [];
@@ -83,7 +85,6 @@ fileInput.addEventListener("change", (e) => {
   hideInput.style.display = "none";
   handleFile(file);
 });
-
 function handleFile(file) {
   // 1. create a new Date object passing the lastModified property of the file as an argument
   const date = new Date(file.lastModified);
@@ -115,24 +116,14 @@ function handleFile(file) {
   zip
     .loadAsync(file)
     .then((zip) => {
-      // if (
-      //   !zip.file("absente.csv") ||
-      //   !zip.file("orar.csv") ||
-      //   !zip.file("note.csv")
-      // ) {
-      //   alert(
-      //     `Folderul zip nu conține fișierele din raport-general.zip! Vă rugăm să încărcați folderul corect!`
-      //   );
-      //   location.reload();
-      //   return;
-      // }
       return Promise.all([
         zip.file("absente.csv").async("blob"),
         zip.file("orar.csv").async("blob"),
         zip.file("note.csv").async("blob"),
+        zip.file("elevi.csv").async("blob"),
       ]);
     })
-    .then(([absenteBlob, orarBlob, noteBlob]) => {
+    .then(([absenteBlob, orarBlob, noteBlob, eleviBlob]) => {
       const absenteReader = new FileReader();
       absenteReader.readAsText(absenteBlob);
       absenteReader.onload = (e) => {
@@ -192,6 +183,72 @@ function handleFile(file) {
 
         discipline = Array.from(new Set(orarData)).sort();
       };
+      const eleviReader = new FileReader();
+      let eleviData = [];
+      eleviReader.readAsText(eleviBlob);
+      eleviReader.onload = (e) => {
+        const eleviCsv = e.target.result;
+        const eleviRows = eleviCsv.split("\n").slice(1, -1);
+        eleviData = eleviRows.map(
+          (row) => `${row.split(",")[0]} ${row.split(",")[1]}`
+        );
+
+        //Afișează fereastra modală când execuția ajunge în acest punct
+        const modal = document.getElementById("myModal");
+        modal.style.display = "block";
+        const closeModalButton = document.getElementById("closeModal");
+        const saveGradeButton = document.getElementById("saveGradeBtn");
+        const studentList = document.getElementById("studentList");
+
+        // Adaugă eveniment pentru butonul de închidere
+        closeModalButton.addEventListener("click", () => {
+          modal.style.display = "none";
+          renderStudentStatistics();
+        });
+        // Adaugă eveniment pentru butonul de salvare
+        saveGradeButton.addEventListener("click", () => {
+          // Parcurge lista de elevi și actualizează valorile în localStorage
+          modal.style.display = "none";
+          renderStudentStatistics();
+        });
+
+        // Setăm valoarea implicită în localStorage pentru toți elevii (dacă nu există deja)
+        eleviData.forEach((student) => {
+          const dirigentieGrade = localStorage.getItem(`dirigentie_${student}`);
+          if (dirigentieGrade === null) {
+            localStorage.setItem(`dirigentie_${student}`, 10);
+          }
+        });
+
+        // Afisam modalul cu lista de elevi si campurile de nota
+        eleviData.forEach((student) => {
+          const defaultValue =
+            localStorage.getItem(`dirigentie_${student}`) || 10;
+
+          const listItem = document.createElement("li");
+          listItem.innerHTML = `
+          <span>${student}</span>
+          <input type="text" id="gradeInput_${student}" value="${defaultValue}" />
+        `;
+
+          studentList.appendChild(listItem);
+        });
+
+        // update localStorage on input change
+        studentList.addEventListener("input", (e) => {
+          const studentName = e.target.id.split("_")[1];
+          const grade = e.target.value;
+
+          localStorage.setItem(`dirigentie_${studentName}`, grade);
+          // update grades data with the last dirigentie grade for the student from localStorage
+
+          gradesData[studentName]["Disciplines"]["Dirigentie"].average = grade;
+
+          renderStudentGradesTable();
+          renderStudentStatistics();
+        });
+      };
+
       const noteReader = new FileReader();
       noteReader.readAsText(noteBlob);
       noteReader.onload = (e) => {
@@ -200,23 +257,77 @@ function handleFile(file) {
         const noteData = noteRows.map((row) => [
           row.split(",")[0],
           row.split(",")[1],
-          row.split(",")[4],
+          row.split(",")[coloanaNote],
         ]);
+        // sort noteData by student name
+        noteData.sort((a, b) => {
+          if (a[0] < b[0]) return -1;
+          if (a[0] > b[0]) return 1;
+          return 0;
+        });
 
         noteData.forEach((row) => {
           const [studentName, grade, disciplineName] = row;
+          const dirigentieGrade = localStorage.getItem(
+            `dirigentie_${studentName}`
+          );
           if (!gradesData[studentName]) {
-            gradesData[studentName] = {};
+            gradesData[studentName] = {
+              Disciplines: {
+                Dirigentie: {
+                  grades: [],
+                  average: dirigentieGrade,
+                },
+              },
+            };
+
             discipline.forEach((disciplin) => {
-              gradesData[studentName][disciplin] = [];
+              if (disciplin !== "Dirigentie") {
+                gradesData[studentName]["Disciplines"][disciplin] = {
+                  grades: [],
+                  average: "",
+                };
+              }
             });
           }
-          if (gradesData[studentName][disciplineName]) {
-            gradesData[studentName][disciplineName].push(grade);
+
+          if (gradesData[studentName]["Disciplines"][disciplineName]) {
+            // For 'Dirigentie', just update the average
+            if (disciplineName === "Dirigentie") {
+              const dirigentieGrade = localStorage.getItem(
+                `dirigentie_${studentName}`
+              );
+              gradesData[studentName]["Disciplines"][disciplineName].average =
+                dirigentieGrade;
+            } else {
+              gradesData[studentName]["Disciplines"][
+                disciplineName
+              ].grades.push(grade);
+
+              // Calculate the average for the current discipline only if there are grades
+              const gradesArray = gradesData[studentName]["Disciplines"][
+                disciplineName
+              ].grades.filter((grade) => grade !== "");
+
+              if (gradesArray.length > 0) {
+                const sum = gradesArray.reduce(
+                  (a, b) => parseFloat(a) + parseFloat(b),
+                  0
+                );
+                const average = sum / gradesArray.length || 0;
+                const customAverage = customRound(average);
+
+                // Update the average property for the current discipline
+                gradesData[studentName]["Disciplines"][disciplineName].average =
+                  customAverage;
+              }
+            }
           }
         });
+
         renderStudentGradesTable();
         populateStudentSelect();
+
         //end
       };
     });
@@ -239,6 +350,124 @@ function customRound(number) {
   if (number === 0) return "";
   return Math.round(number);
 }
+const calcMediaButton = document.getElementById("btn-calc-media-generala");
+calcMediaButton.addEventListener("click", displayMediaGenerala);
+
+let studentsStatistics = {};
+function renderStudentStatistics() {
+  function calculateGeneralAverages(gradesData) {
+    const studentsGeneralAverages = {};
+
+    for (const [studentName, student] of Object.entries(gradesData)) {
+      let sum = 0;
+      let count = 0;
+
+      for (const [, discipline] of Object.entries(student.Disciplines)) {
+        const average = discipline.average;
+        if (average !== "") {
+          sum += parseFloat(average);
+          count++;
+        }
+      }
+
+      const generalAverage = count > 0 ? sum / count : 0;
+      studentsGeneralAverages[studentName] = generalAverage.toFixed(2);
+    }
+
+    return studentsGeneralAverages;
+  }
+
+  function calculatePositionsInClass(generalAverages) {
+    const sortedAverages = Object.entries(generalAverages).sort(
+      (a, b) => parseFloat(b[1]) - parseFloat(a[1])
+    );
+    const positions = {};
+
+    let currentPosition = 1;
+    let currentAverage = parseFloat(sortedAverages[0][1]);
+
+    for (const [studentName, average] of sortedAverages) {
+      if (parseFloat(average) !== currentAverage) {
+        currentPosition++;
+        currentAverage = parseFloat(average);
+      }
+
+      positions[studentName] = currentPosition;
+    }
+
+    return positions;
+  }
+
+  const generalAverages = calculateGeneralAverages(gradesData);
+  const positions = calculatePositionsInClass(generalAverages);
+
+  for (const studentName of Object.keys(gradesData)) {
+    const generalAverage = parseFloat(generalAverages[studentName]);
+    studentsStatistics[studentName] = {
+      generalAverage,
+      position: positions[studentName],
+    };
+  }
+}
+
+function displayMediaGenerala() {
+  const mediaGeneralaDiv = document.getElementById(
+    "student-msg-media-generala"
+  );
+  const studentMsgAverage = document.getElementById("student-msg-average");
+
+  const mediaHeader = document.getElementById("media-header");
+  studentMsgAverage.style.width = `${
+    mediaHeader.getBoundingClientRect().width
+  }px`;
+
+  const studentName =
+    document.getElementsByClassName("student-upper")[0].textContent;
+
+  // Check if the student name exists in studentsStatistics
+  if (studentsStatistics.hasOwnProperty(studentName)) {
+    const generalAverage = parseFloat(
+      studentsStatistics[studentName].generalAverage
+    );
+    studentMsgAverage.textContent = generalAverage.toFixed(2);
+    // after student name i want to display the position in class
+    const studentNameElement =
+      document.getElementsByClassName("student-upper")[0];
+
+    const position = studentsStatistics[studentName].position;
+    const positionElement = document.createElement("span");
+    positionElement.textContent = `(locul ${position} din ${
+      Object.keys(studentsStatistics).length
+    })`;
+    positionElement.style.color = "white";
+    positionElement.style.fontSize = "0.9rem";
+    positionElement.style.fontWeight = "normal";
+    positionElement.style.marginLeft = "5px";
+    positionElement.style.textTransform = "none";
+    studentNameElement.appendChild(positionElement);
+  } else {
+    console.error(`Student ${studentName} not found in studentsStatistics`);
+    // Handle the case where the student is not found
+    studentMsgAverage.textContent = "N/A";
+  }
+
+  // Toggle visibility of the divs
+  mediaGeneralaDiv.style.display = "block";
+  studentMsgAverage.style.display = "block";
+  calcMediaButton.style.display = "none";
+}
+
+function resetMediaGenerala() {
+  const mediaGeneralaDiv = document.getElementById(
+    "student-msg-media-generala"
+  );
+  const studentMsgAverage = document.getElementById("student-msg-average");
+
+  // Toggle visibility of the divs
+  mediaGeneralaDiv.style.display = "none";
+  studentMsgAverage.style.display = "none";
+  calcMediaButton.style.display = "block";
+}
 
 function renderStudentGradesTable(gradesDataToRender = gradesData) {
   const firstStudentGrades = Object.keys(gradesDataToRender)[0];
@@ -258,23 +487,28 @@ function renderStudentGradesTable(gradesDataToRender = gradesData) {
   </tr>
 </thead>
 <tbody>
-${Object.keys(gradesDataToRender[firstStudentGrades])
+${Object.keys(gradesDataToRender[firstStudentGrades]["Disciplines"])
   .map((discipline) => {
-    let tableGradesRows = `<td id="materie">${discipline}</td>`;
+    const average =
+      gradesDataToRender[firstStudentGrades]["Disciplines"][discipline].average;
+    const disciplineName =
+      average > 4.99 || average === ""
+        ? discipline
+        : `${discipline} (corigent)`;
+    const disciplineColor = average > 4.99 || average === "" ? "" : "red";
+    let tableGradesRows = `<td id="materie" style="color: ${disciplineColor}">${disciplineName}</td>`;
+
     for (let i = 0; i < numberofGradesCells; i++) {
       tableGradesRows += `<td class="col-centru">${
-        gradesDataToRender[firstStudentGrades][discipline][i] || ""
+        gradesDataToRender[firstStudentGrades]["Disciplines"][discipline]
+          .grades[i] || ""
       }</td>`;
     }
-    // Calculate the average
-    const gradesArray = gradesDataToRender[firstStudentGrades][
-      discipline
-    ].filter((grade) => grade !== "");
-    const sum = gradesArray.reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
-    const average = sum / gradesArray.length || 0;
-    const customAverage = customRound(average);
+
     tableGradesRows += `<td class="col-centru bold-text media-cell" style="background-color:#FFCDD2
-    ;">${customAverage}</td>`;
+    ;">${
+      gradesData[firstStudentGrades]["Disciplines"][discipline].average || ""
+    }</td>`;
     return `<tr>${tableGradesRows}</tr>`;
   })
   .join("")}
@@ -292,40 +526,6 @@ ${Object.keys(gradesDataToRender[firstStudentGrades])
     studentMsgAbsente.innerHTML = stdMsg;
   }
   studendMsgDate.textContent = gradesTableDate;
-  const studentMsgAverage = document.getElementById("student-msg-average");
-  const mediaHeader = document.getElementById("media-header");
-  studentMsgAverage.style.width = `${
-    mediaHeader.getBoundingClientRect().width
-  }px`;
-  studentMsgAverage.textContent = calculateTotalMediaAverage();
-
-  function calculateTotalMediaAverage() {
-    const mediaCells = document.querySelectorAll(".media-cell");
-    const materieCells = document.querySelectorAll("#materie");
-
-    let totalMedia = 0;
-    let totalCompletedCells = 0;
-
-    mediaCells.forEach((cell, index) => {
-      const mediaValue = parseFloat(cell.textContent);
-
-      if (!isNaN(mediaValue)) {
-        if (mediaValue < 5) {
-          //add red color and after text (corigent)
-          materieCells[index].textContent += " (corigent)";
-          materieCells[index].style.color = "red";
-        }
-
-        totalMedia += mediaValue;
-        totalCompletedCells++;
-      }
-    });
-    console.log(totalMedia, totalCompletedCells);
-
-    return totalCompletedCells > 0
-      ? (totalMedia / totalCompletedCells).toFixed(2)
-      : 0;
-  }
 }
 selectStudentGradesElement.addEventListener("change", updateStudentGradesTable);
 
@@ -350,7 +550,7 @@ function updateStudentGradesTable(direction) {
   ) {
     selectStudentGradesElement.selectedIndex = selectedIndex + 1;
   }
-
+  resetMediaGenerala();
   const studentName = selectStudentGradesElement.value;
   renderStudentGradesTable({ [studentName]: gradesData[studentName] });
   const student = studentTotalsOriginal.find((s) => s.name === studentName);
@@ -362,39 +562,6 @@ function updateStudentGradesTable(direction) {
     studentMsgAbsente.innerHTML = stdMsg;
   }
   studendMsgDate.textContent = gradesTableDate;
-  const studentMsgAverage = document.getElementById("student-msg-average");
-  const mediaHeader = document.getElementById("media-header");
-  studentMsgAverage.style.width = `${
-    mediaHeader.getBoundingClientRect().width
-  }px`;
-  studentMsgAverage.textContent = calculateTotalMediaAverage();
-
-  function calculateTotalMediaAverage() {
-    const mediaCells = document.querySelectorAll(".media-cell");
-    const materieCells = document.querySelectorAll("#materie");
-
-    let totalMedia = 0;
-    let totalCompletedCells = 0;
-
-    mediaCells.forEach((cell, index) => {
-      const mediaValue = parseFloat(cell.textContent);
-
-      if (!isNaN(mediaValue)) {
-        // if (mediaValue < 5) {
-        //   //add red color and after text (corigent)
-        //   materieCells[index].textContent += " (corigent)";
-        //   materieCells[index].style.color = "red";
-        // }
-
-        totalMedia += mediaValue;
-        totalCompletedCells++;
-      }
-    });
-
-    return totalCompletedCells > 0
-      ? (totalMedia / totalCompletedCells).toFixed(2)
-      : 0;
-  }
 }
 
 function renderTable(dataToRender = data) {
