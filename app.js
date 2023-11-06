@@ -491,10 +491,10 @@ ${Object.keys(gradesDataToRender[firstStudentGrades]["Disciplines"])
   .map((discipline) => {
     const average =
       gradesDataToRender[firstStudentGrades]["Disciplines"][discipline].average;
-    const disciplineName =
-      average > 4.99 || average === ""
-        ? discipline
-        : `${discipline} (corigent)`;
+    // const disciplineName =
+    //   average > 4.99 || average === ""
+    //     ? discipline
+    //     : `${discipline} (corigent)`;
     const disciplineColor = average > 4.99 || average === "" ? "" : "red";
     let tableGradesRows = `<td id="materie" style="color: ${disciplineColor}">${disciplineName}</td>`;
 
