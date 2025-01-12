@@ -1,5 +1,5 @@
 const numberofGradesCells = 12;
-const coloanaNote = 4;
+const coloanaNote = 3; //este coloana disciplinei
 const fileInput = document.getElementById("fileInput");
 const dataTable = document.getElementById("data-table");
 const dataTableTotals = document.getElementById("data-table-totals");
