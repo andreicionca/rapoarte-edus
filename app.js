@@ -86,6 +86,269 @@ fileInput.addEventListener('change', (e) => {
   handleFile(file);
 });
 
+// function handleFile(file) {
+//   // 1. create a new Date object passing the lastModified property of the file as an argument
+//   const date = new Date(file.lastModified);
+
+//   // 2. create an object with the options for formatting the date
+//   const options = {
+//     year: 'numeric',
+//     month: 'long',
+//     day: 'numeric',
+//     weekday: 'long',
+//     timezone: 'UTC',
+//     hour: 'numeric',
+//     minute: 'numeric',
+//     second: 'numeric',
+//   };
+//   const optionsday = {
+//     year: 'numeric',
+//     month: 'long',
+//     day: 'numeric',
+//   };
+//   // 3. create a new variable with the Romanian date using the toLocaleDateString method
+//   const romanianDate = date.toLocaleDateString('ro-RO', options);
+//   gradesTableDate = date.toLocaleDateString('ro-RO', optionsday);
+//   // 4. display the Romanian date using the innerHTML property
+//   msgDisplayDate.innerHTML = `<p>Fișierul  pe care tocmai l-ați incărcat aici, a fost descărcat de pe Edus <strong>${romanianDate}</strong></p>`;
+
+//   // added code starts here
+//   const zip = new JSZip();
+//   zip
+//     .loadAsync(file)
+//     .then((zip) => {
+//       return Promise.all([
+//         zip.file('absente.csv').async('blob'),
+//         zip.file('note.csv').async('blob'),
+//         zip.file('elevi.csv').async('blob'),
+//       ]);
+//     })
+//     .then(([absenteBlob, noteBlob, eleviBlob]) => {
+//       const absenteReader = new FileReader();
+//       absenteReader.readAsText(absenteBlob);
+//       absenteReader.onload = (e) => {
+//         const absenteCsv = e.target.result;
+//         data = absenteCsv
+//           .split('\n')
+//           .slice(1, -1)
+//           .map((row) => row.split(','));
+//         dataMonth = data.map((row) =>
+//           new Date(row[1].split('/').reverse().join('-')).toLocaleString('default', {
+//             month: 'short',
+//           })
+//         );
+
+//         data.forEach((row) => {
+//           const studentName = row[0];
+//           const isMotivated = row[2] === 'Da';
+
+//           let student = studentTotals.find((s) => s.name === studentName);
+//           if (!student) {
+//             student = {
+//               name: studentName,
+//               motivated: 0,
+//               notMotivated: 0,
+//             };
+//             studentTotals.push(student);
+//           }
+
+//           if (isMotivated) {
+//             student.motivated++;
+//           } else {
+//             student.notMotivated++;
+//           }
+//           student.total = student.motivated + student.notMotivated;
+//         });
+//         studentTotalsOriginal = [...studentTotals];
+
+//         renderTable();
+//         populateSelect(elevSelect, 0);
+//         populateSelect(monthSelect, 1);
+//         populateSelect(motivataSelect, 2);
+//         populateSelect(materieSelect, 3);
+//         populateSelect(clasaSelect, 4);
+//         renderTableTotals(studentTotals);
+//         showAllTabels.style.display = 'block';
+//         document.getElementById('grades-table').scrollIntoView({ behavior: 'smooth' });
+//       };
+
+//       const eleviReader = new FileReader();
+//       let eleviData = [];
+//       eleviReader.readAsText(eleviBlob);
+//       eleviReader.onload = (e) => {
+//         const eleviCsv = e.target.result;
+//         const eleviRows = eleviCsv.split('\n').slice(1, -1);
+//         eleviData = eleviRows.map((row) => `${row.split(',')[0]} ${row.split(',')[1]}`);
+
+//         //Afișează fereastra modală când execuția ajunge în acest punct
+//         const modal = document.getElementById('myModal');
+//         modal.style.display = 'block';
+//         const closeModalButton = document.getElementById('closeModal');
+//         const saveGradeButton = document.getElementById('saveGradeBtn');
+//         const studentList = document.getElementById('studentList');
+
+//         // Adaugă eveniment pentru butonul de închidere
+//         closeModalButton.addEventListener('click', () => {
+//           modal.style.display = 'none';
+//           renderStudentStatistics();
+//         });
+//         // Adaugă eveniment pentru butonul de salvare
+//         saveGradeButton.addEventListener('click', () => {
+//           // Parcurge lista de elevi și actualizează valorile în localStorage
+//           modal.style.display = 'none';
+//           renderStudentStatistics();
+//         });
+
+//         // Setăm valoarea implicită în localStorage pentru toți elevii (dacă nu există deja)
+//         eleviData.forEach((student) => {
+//           const dirigentieGrade = localStorage.getItem(`dirigentie_${student}`);
+//           if (dirigentieGrade === null) {
+//             localStorage.setItem(`dirigentie_${student}`, 10);
+//           }
+//         });
+
+//         // Afisam modalul cu lista de elevi si campurile de nota
+//         eleviData.forEach((student) => {
+//           const defaultValue = localStorage.getItem(`dirigentie_${student}`) || 10;
+
+//           const listItem = document.createElement('li');
+//           listItem.innerHTML = `
+//           <span>${student}</span>
+//           <input type="text" id="gradeInput_${student}" value="${defaultValue}" />
+//         `;
+
+//           studentList.appendChild(listItem);
+//         });
+
+//         // update localStorage on input change
+//         studentList.addEventListener('input', (e) => {
+//           const studentName = e.target.id.split('_')[1];
+//           const grade = e.target.value;
+
+//           localStorage.setItem(`dirigentie_${studentName}`, grade);
+//           // update grades data with the last dirigentie grade for the student from localStorage
+
+//           gradesData[studentName]['Disciplines']['Dirigentie'].average = grade;
+
+//           renderStudentGradesTable();
+//           renderStudentStatistics();
+//         });
+//       };
+
+//       const noteReader = new FileReader();
+//       noteReader.readAsText(noteBlob);
+//       noteReader.onload = (e) => {
+//         const noteCsv = e.target.result;
+//         const noteRows = noteCsv.split('\n').slice(1, -1);
+
+//         // Extrage clasa din prima intrare din note.csv
+//         let clasa = '';
+//         if (noteRows.length > 0) {
+//           const firstRow = noteRows[0].split(',');
+//           clasa = firstRow[4] ? firstRow[4].trim() : ''; // Coloana "Clasa"
+//         }
+
+//         // Încarcă orarul global static și filtrează după clasă
+//         fetch('orar-global.csv')
+//           .then((response) => response.text())
+//           .then((orarCsv) => {
+//             const orarRows = orarCsv.split('\n').slice(1); // Skip header
+//             const orarData = orarRows
+//               .filter((row) => {
+//                 const cols = row.split(',');
+//                 return cols[2] && cols[2].trim() === clasa; // Filtrează după clasa curentă
+//               })
+//               .map((row) => {
+//                 const cols = row.split(',');
+//                 return cols[3] ? cols[3].trim() : ''; // Extrage materia (coloana 4)
+//               })
+//               .filter((materie) => materie !== ''); // Elimină valorile goale
+
+//             discipline = Array.from(new Set(orarData)).sort();
+
+//             // Continuă cu procesarea notelor
+//             const noteData = noteRows.map((row) => [
+//               row.split(',')[0],
+//               row.split(',')[1],
+//               row.split(',')[coloanaNote],
+//             ]);
+
+//             // sort noteData by student name
+//             noteData.sort((a, b) => {
+//               if (a[0] < b[0]) return -1;
+//               if (a[0] > b[0]) return 1;
+//               return 0;
+//             });
+
+//             noteData.forEach((row) => {
+//               const [studentName, grade, disciplineName] = row;
+//               const dirigentieGrade = localStorage.getItem(`dirigentie_${studentName}`);
+//               if (!gradesData[studentName]) {
+//                 gradesData[studentName] = {
+//                   Disciplines: {
+//                     Dirigentie: {
+//                       grades: [],
+//                       average: dirigentieGrade,
+//                     },
+//                   },
+//                 };
+
+//                 discipline.forEach((disciplin) => {
+//                   if (disciplin !== 'Dirigentie') {
+//                     gradesData[studentName]['Disciplines'][disciplin] = {
+//                       grades: [],
+//                       average: '',
+//                     };
+//                   }
+//                 });
+//               }
+
+//               if (gradesData[studentName]['Disciplines'][disciplineName]) {
+//                 // For 'Dirigentie', just update the average
+//                 if (disciplineName === 'Dirigentie') {
+//                   const dirigentieGrade = localStorage.getItem(`dirigentie_${studentName}`);
+//                   gradesData[studentName]['Disciplines'][disciplineName].average = dirigentieGrade;
+//                 } else {
+//                   gradesData[studentName]['Disciplines'][disciplineName].grades.push(grade);
+
+//                   // Calculate the average for the current discipline only if there are grades
+//                   const gradesArray = gradesData[studentName]['Disciplines'][
+//                     disciplineName
+//                   ].grades.filter((grade) => grade !== '');
+
+//                   if (gradesArray.length > 0) {
+//                     const sum = gradesArray.reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
+//                     const average = sum / gradesArray.length || 0;
+//                     const customAverage = customRound(average);
+
+//                     // Update the average property for the current discipline
+//                     gradesData[studentName]['Disciplines'][disciplineName].average = customAverage;
+//                   }
+//                 }
+//               }
+//             });
+
+//             renderStudentGradesTable();
+//             populateStudentSelect();
+//           })
+//           .catch((error) => {
+//             console.error('Eroare la încărcarea orar-global.csv:', error);
+//             alert(
+//               'Nu s-a putut încărca fișierul orar-global.csv. Asigurați-vă că există în folderul proiectului.'
+//             );
+//           });
+//       };
+//     })
+//     .catch((error) => {
+//       console.error('Eroare la procesarea fișierului ZIP:', error);
+//       alert(
+//         'Eroare la încărcarea fișierului. Asigurați-vă că ați încărcat un fișier raport-complet.zip valid.'
+//       );
+//     });
+
+//   // added code ends here
+// }
+
 function handleFile(file) {
   // 1. create a new Date object passing the lastModified property of the file as an argument
   const date = new Date(file.lastModified);
@@ -106,13 +369,15 @@ function handleFile(file) {
     month: 'long',
     day: 'numeric',
   };
+
   // 3. create a new variable with the Romanian date using the toLocaleDateString method
   const romanianDate = date.toLocaleDateString('ro-RO', options);
   gradesTableDate = date.toLocaleDateString('ro-RO', optionsday);
-  // 4. display the Romanian date using the innerHTML property
-  msgDisplayDate.innerHTML = `<p>Fișierul  pe care tocmai l-ați incărcat aici, a fost descărcat de pe Edus <strong>${romanianDate}</strong></p>`;
 
-  // added code starts here
+  // 4. display the Romanian date using the innerHTML property
+  msgDisplayDate.innerHTML = `<p>Fișierul pe care tocmai l-ați încărcat aici, a fost descărcat de pe Edus <strong>${romanianDate}</strong></p>`;
+
+  // Process ZIP file
   const zip = new JSZip();
   zip
     .loadAsync(file)
@@ -124,6 +389,7 @@ function handleFile(file) {
       ]);
     })
     .then(([absenteBlob, noteBlob, eleviBlob]) => {
+      // Process absente.csv
       const absenteReader = new FileReader();
       absenteReader.readAsText(absenteBlob);
       absenteReader.onload = (e) => {
@@ -132,6 +398,7 @@ function handleFile(file) {
           .split('\n')
           .slice(1, -1)
           .map((row) => row.split(','));
+
         dataMonth = data.map((row) =>
           new Date(row[1].split('/').reverse().join('-')).toLocaleString('default', {
             month: 'short',
@@ -159,6 +426,7 @@ function handleFile(file) {
           }
           student.total = student.motivated + student.notMotivated;
         });
+
         studentTotalsOriginal = [...studentTotals];
 
         renderTable();
@@ -172,6 +440,7 @@ function handleFile(file) {
         document.getElementById('grades-table').scrollIntoView({ behavior: 'smooth' });
       };
 
+      // Process elevi.csv
       const eleviReader = new FileReader();
       let eleviData = [];
       eleviReader.readAsText(eleviBlob);
@@ -180,26 +449,24 @@ function handleFile(file) {
         const eleviRows = eleviCsv.split('\n').slice(1, -1);
         eleviData = eleviRows.map((row) => `${row.split(',')[0]} ${row.split(',')[1]}`);
 
-        //Afișează fereastra modală când execuția ajunge în acest punct
+        // Show modal for Dirigentie grades
         const modal = document.getElementById('myModal');
         modal.style.display = 'block';
         const closeModalButton = document.getElementById('closeModal');
         const saveGradeButton = document.getElementById('saveGradeBtn');
         const studentList = document.getElementById('studentList');
 
-        // Adaugă eveniment pentru butonul de închidere
         closeModalButton.addEventListener('click', () => {
           modal.style.display = 'none';
           renderStudentStatistics();
         });
-        // Adaugă eveniment pentru butonul de salvare
+
         saveGradeButton.addEventListener('click', () => {
-          // Parcurge lista de elevi și actualizează valorile în localStorage
           modal.style.display = 'none';
           renderStudentStatistics();
         });
 
-        // Setăm valoarea implicită în localStorage pentru toți elevii (dacă nu există deja)
+        // Set default values in localStorage
         eleviData.forEach((student) => {
           const dirigentieGrade = localStorage.getItem(`dirigentie_${student}`);
           if (dirigentieGrade === null) {
@@ -207,136 +474,153 @@ function handleFile(file) {
           }
         });
 
-        // Afisam modalul cu lista de elevi si campurile de nota
+        // Populate modal with students
         eleviData.forEach((student) => {
           const defaultValue = localStorage.getItem(`dirigentie_${student}`) || 10;
-
           const listItem = document.createElement('li');
           listItem.innerHTML = `
-          <span>${student}</span>
-          <input type="text" id="gradeInput_${student}" value="${defaultValue}" />
-        `;
-
+            <span>${student}</span>
+            <input type="text" id="gradeInput_${student}" value="${defaultValue}" />
+          `;
           studentList.appendChild(listItem);
         });
 
-        // update localStorage on input change
+        // Update localStorage on input change
         studentList.addEventListener('input', (e) => {
           const studentName = e.target.id.split('_')[1];
           const grade = e.target.value;
 
           localStorage.setItem(`dirigentie_${studentName}`, grade);
-          // update grades data with the last dirigentie grade for the student from localStorage
 
-          gradesData[studentName]['Disciplines']['Dirigentie'].average = grade;
-
-          renderStudentGradesTable();
-          renderStudentStatistics();
+          if (gradesData[studentName] && gradesData[studentName]['Disciplines']['Dirigentie']) {
+            gradesData[studentName]['Disciplines']['Dirigentie'].average = grade;
+            renderStudentGradesTable();
+            renderStudentStatistics();
+          }
         });
       };
 
+      // Process note.csv - MODIFIED SECTION
       const noteReader = new FileReader();
       noteReader.readAsText(noteBlob);
       noteReader.onload = (e) => {
         const noteCsv = e.target.result;
         const noteRows = noteCsv.split('\n').slice(1, -1);
 
-        // Extrage clasa din prima intrare din note.csv
-        let clasa = '';
-        if (noteRows.length > 0) {
-          const firstRow = noteRows[0].split(',');
-          clasa = firstRow[4] ? firstRow[4].trim() : ''; // Coloana "Clasa"
+        // Extract unique disciplines from grades
+        const disciplineFromNote = new Set();
+        const noteData = noteRows.map((row) => {
+          const cols = row.split(',');
+          const studentName = cols[0];
+          const grade = cols[1];
+          const disciplineName = cols[coloanaNote];
+
+          // Add discipline to set if it exists
+          if (disciplineName && disciplineName.trim() !== '') {
+            disciplineFromNote.add(disciplineName.trim());
+          }
+
+          return [studentName, grade, disciplineName];
+        });
+
+        // Extract unique disciplines from absences
+        const disciplineFromAbsente = new Set();
+        data.forEach((row) => {
+          const disciplineName = row[3];
+          if (disciplineName && disciplineName.trim() !== '') {
+            disciplineFromAbsente.add(disciplineName.trim());
+          }
+        });
+
+        // Combine disciplines from both sources
+        const allDisciplines = new Set([...disciplineFromNote, ...disciplineFromAbsente]);
+
+        // Convert to array and sort alphabetically
+        discipline = Array.from(allDisciplines).sort();
+
+        // Add "Dirigentie" if not already present
+        if (!discipline.includes('Dirigentie')) {
+          discipline.push('Dirigentie');
+          discipline.sort();
         }
 
-        // Încarcă orarul global static și filtrează după clasă
-        fetch('orar-global.csv')
-          .then((response) => response.text())
-          .then((orarCsv) => {
-            const orarRows = orarCsv.split('\n').slice(1); // Skip header
-            const orarData = orarRows
-              .filter((row) => {
-                const cols = row.split(',');
-                return cols[2] && cols[2].trim() === clasa; // Filtrează după clasa curentă
-              })
-              .map((row) => {
-                const cols = row.split(',');
-                return cols[3] ? cols[3].trim() : ''; // Extrage materia (coloana 4)
-              })
-              .filter((materie) => materie !== ''); // Elimină valorile goale
+        // Sort noteData by student name
+        noteData.sort((a, b) => {
+          if (a[0] < b[0]) return -1;
+          if (a[0] > b[0]) return 1;
+          return 0;
+        });
 
-            discipline = Array.from(new Set(orarData)).sort();
+        // Initialize gradesData structure
+        noteData.forEach((row) => {
+          const [studentName, grade, disciplineName] = row;
+          const dirigentieGrade = localStorage.getItem(`dirigentie_${studentName}`);
 
-            // Continuă cu procesarea notelor
-            const noteData = noteRows.map((row) => [
-              row.split(',')[0],
-              row.split(',')[1],
-              row.split(',')[coloanaNote],
-            ]);
+          if (!gradesData[studentName]) {
+            gradesData[studentName] = {
+              Disciplines: {
+                Dirigentie: {
+                  grades: [],
+                  average: dirigentieGrade || '10',
+                },
+              },
+            };
 
-            // sort noteData by student name
-            noteData.sort((a, b) => {
-              if (a[0] < b[0]) return -1;
-              if (a[0] > b[0]) return 1;
-              return 0;
-            });
-
-            noteData.forEach((row) => {
-              const [studentName, grade, disciplineName] = row;
-              const dirigentieGrade = localStorage.getItem(`dirigentie_${studentName}`);
-              if (!gradesData[studentName]) {
-                gradesData[studentName] = {
-                  Disciplines: {
-                    Dirigentie: {
-                      grades: [],
-                      average: dirigentieGrade,
-                    },
-                  },
+            // Initialize only disciplines that actually exist in data
+            discipline.forEach((disciplin) => {
+              if (disciplin !== 'Dirigentie') {
+                gradesData[studentName]['Disciplines'][disciplin] = {
+                  grades: [],
+                  average: '',
                 };
-
-                discipline.forEach((disciplin) => {
-                  if (disciplin !== 'Dirigentie') {
-                    gradesData[studentName]['Disciplines'][disciplin] = {
-                      grades: [],
-                      average: '',
-                    };
-                  }
-                });
-              }
-
-              if (gradesData[studentName]['Disciplines'][disciplineName]) {
-                // For 'Dirigentie', just update the average
-                if (disciplineName === 'Dirigentie') {
-                  const dirigentieGrade = localStorage.getItem(`dirigentie_${studentName}`);
-                  gradesData[studentName]['Disciplines'][disciplineName].average = dirigentieGrade;
-                } else {
-                  gradesData[studentName]['Disciplines'][disciplineName].grades.push(grade);
-
-                  // Calculate the average for the current discipline only if there are grades
-                  const gradesArray = gradesData[studentName]['Disciplines'][
-                    disciplineName
-                  ].grades.filter((grade) => grade !== '');
-
-                  if (gradesArray.length > 0) {
-                    const sum = gradesArray.reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
-                    const average = sum / gradesArray.length || 0;
-                    const customAverage = customRound(average);
-
-                    // Update the average property for the current discipline
-                    gradesData[studentName]['Disciplines'][disciplineName].average = customAverage;
-                  }
-                }
               }
             });
+          }
 
-            renderStudentGradesTable();
-            populateStudentSelect();
-          })
-          .catch((error) => {
-            console.error('Eroare la încărcarea orar-global.csv:', error);
-            alert(
-              'Nu s-a putut încărca fișierul orar-global.csv. Asigurați-vă că există în folderul proiectului.'
-            );
+          // Add grades to appropriate disciplines
+          if (disciplineName && gradesData[studentName]['Disciplines'][disciplineName]) {
+            if (disciplineName === 'Dirigentie') {
+              // For Dirigentie, just update the average
+              gradesData[studentName]['Disciplines'][disciplineName].average =
+                localStorage.getItem(`dirigentie_${studentName}`) || '10';
+            } else {
+              // Add grade to the discipline
+              gradesData[studentName]['Disciplines'][disciplineName].grades.push(grade);
+
+              // Calculate average for the discipline
+              const gradesArray = gradesData[studentName]['Disciplines'][
+                disciplineName
+              ].grades.filter((g) => g !== '');
+
+              if (gradesArray.length > 0) {
+                const sum = gradesArray.reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
+                const average = sum / gradesArray.length;
+                const customAverage = customRound(average);
+                gradesData[studentName]['Disciplines'][disciplineName].average = customAverage;
+              }
+            }
+          }
+        });
+
+        // Optional: Clean up disciplines with no grades
+        Object.keys(gradesData).forEach((studentName) => {
+          Object.keys(gradesData[studentName]['Disciplines']).forEach((disciplineName) => {
+            const disciplineData = gradesData[studentName]['Disciplines'][disciplineName];
+
+            // Keep only disciplines that have grades or are "Dirigentie"
+            if (
+              disciplineName !== 'Dirigentie' &&
+              disciplineData.grades.length === 0 &&
+              disciplineData.average === ''
+            ) {
+              delete gradesData[studentName]['Disciplines'][disciplineName];
+            }
           });
+        });
+
+        // Render the tables
+        renderStudentGradesTable();
+        populateStudentSelect();
       };
     })
     .catch((error) => {
@@ -345,8 +629,6 @@ function handleFile(file) {
         'Eroare la încărcarea fișierului. Asigurați-vă că ați încărcat un fișier raport-complet.zip valid.'
       );
     });
-
-  // added code ends here
 }
 
 function populateStudentSelect() {
