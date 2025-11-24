@@ -440,7 +440,7 @@ function handleFile(file) {
         document.getElementById('grades-table').scrollIntoView({ behavior: 'smooth' });
       };
 
-      // Process elevi.csv (simplificat - doar pentru a obține lista de elevi)
+      // Process elevi.csv
       const eleviReader = new FileReader();
       let eleviData = [];
       eleviReader.readAsText(eleviBlob);
@@ -449,11 +449,58 @@ function handleFile(file) {
         const eleviRows = eleviCsv.split('\n').slice(1, -1);
         eleviData = eleviRows.map((row) => `${row.split(',')[0]} ${row.split(',')[1]}`);
 
-        // Doar procesăm lista de elevi, fără modal sau dirigentie
-        renderStudentStatistics();
+        // Show modal for Dirigentie grades
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'block';
+        const closeModalButton = document.getElementById('closeModal');
+        const saveGradeButton = document.getElementById('saveGradeBtn');
+        const studentList = document.getElementById('studentList');
+
+        closeModalButton.addEventListener('click', () => {
+          modal.style.display = 'none';
+          renderStudentStatistics();
+        });
+
+        saveGradeButton.addEventListener('click', () => {
+          modal.style.display = 'none';
+          renderStudentStatistics();
+        });
+
+        // Set default values in localStorage
+        eleviData.forEach((student) => {
+          const dirigentieGrade = localStorage.getItem(`dirigentie_${student}`);
+          if (dirigentieGrade === null) {
+            localStorage.setItem(`dirigentie_${student}`, 10);
+          }
+        });
+
+        // Populate modal with students
+        eleviData.forEach((student) => {
+          const defaultValue = localStorage.getItem(`dirigentie_${student}`) || 10;
+          const listItem = document.createElement('li');
+          listItem.innerHTML = `
+            <span>${student}</span>
+            <input type="text" id="gradeInput_${student}" value="${defaultValue}" />
+          `;
+          studentList.appendChild(listItem);
+        });
+
+        // Update localStorage on input change
+        studentList.addEventListener('input', (e) => {
+          const studentName = e.target.id.split('_')[1];
+          const grade = e.target.value;
+
+          localStorage.setItem(`dirigentie_${studentName}`, grade);
+
+          if (gradesData[studentName] && gradesData[studentName]['Disciplines']['Dirigentie']) {
+            gradesData[studentName]['Disciplines']['Dirigentie'].average = grade;
+            renderStudentGradesTable();
+            renderStudentStatistics();
+          }
+        });
       };
 
-      // Process note.csv
+      // Process note.csv - MODIFIED SECTION
       const noteReader = new FileReader();
       noteReader.readAsText(noteBlob);
       noteReader.onload = (e) => {
@@ -491,6 +538,12 @@ function handleFile(file) {
         // Convert to array and sort alphabetically
         discipline = Array.from(allDisciplines).sort();
 
+        // Add "Dirigentie" if not already present
+        if (!discipline.includes('Dirigentie')) {
+          discipline.push('Dirigentie');
+          discipline.sort();
+        }
+
         // Sort noteData by student name
         noteData.sort((a, b) => {
           if (a[0] < b[0]) return -1;
@@ -501,36 +554,50 @@ function handleFile(file) {
         // Initialize gradesData structure
         noteData.forEach((row) => {
           const [studentName, grade, disciplineName] = row;
+          const dirigentieGrade = localStorage.getItem(`dirigentie_${studentName}`);
 
           if (!gradesData[studentName]) {
             gradesData[studentName] = {
-              Disciplines: {},
+              Disciplines: {
+                Dirigentie: {
+                  grades: [],
+                  average: dirigentieGrade || '10',
+                },
+              },
             };
 
-            // Initialize all disciplines for this student
+            // Initialize only disciplines that actually exist in data
             discipline.forEach((disciplin) => {
-              gradesData[studentName]['Disciplines'][disciplin] = {
-                grades: [],
-                average: '',
-              };
+              if (disciplin !== 'Dirigentie') {
+                gradesData[studentName]['Disciplines'][disciplin] = {
+                  grades: [],
+                  average: '',
+                };
+              }
             });
           }
 
           // Add grades to appropriate disciplines
           if (disciplineName && gradesData[studentName]['Disciplines'][disciplineName]) {
-            // Add grade to the discipline
-            gradesData[studentName]['Disciplines'][disciplineName].grades.push(grade);
+            if (disciplineName === 'Dirigentie') {
+              // For Dirigentie, just update the average
+              gradesData[studentName]['Disciplines'][disciplineName].average =
+                localStorage.getItem(`dirigentie_${studentName}`) || '10';
+            } else {
+              // Add grade to the discipline
+              gradesData[studentName]['Disciplines'][disciplineName].grades.push(grade);
 
-            // Calculate average for the discipline
-            const gradesArray = gradesData[studentName]['Disciplines'][
-              disciplineName
-            ].grades.filter((g) => g !== '');
+              // Calculate average for the discipline
+              const gradesArray = gradesData[studentName]['Disciplines'][
+                disciplineName
+              ].grades.filter((g) => g !== '');
 
-            if (gradesArray.length > 0) {
-              const sum = gradesArray.reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
-              const average = sum / gradesArray.length;
-              const customAverage = customRound(average);
-              gradesData[studentName]['Disciplines'][disciplineName].average = customAverage;
+              if (gradesArray.length > 0) {
+                const sum = gradesArray.reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
+                const average = sum / gradesArray.length;
+                const customAverage = customRound(average);
+                gradesData[studentName]['Disciplines'][disciplineName].average = customAverage;
+              }
             }
           }
         });
@@ -540,8 +607,12 @@ function handleFile(file) {
           Object.keys(gradesData[studentName]['Disciplines']).forEach((disciplineName) => {
             const disciplineData = gradesData[studentName]['Disciplines'][disciplineName];
 
-            // Remove disciplines that have no grades
-            if (disciplineData.grades.length === 0 && disciplineData.average === '') {
+            // Keep only disciplines that have grades or are "Dirigentie"
+            if (
+              disciplineName !== 'Dirigentie' &&
+              disciplineData.grades.length === 0 &&
+              disciplineData.average === ''
+            ) {
               delete gradesData[studentName]['Disciplines'][disciplineName];
             }
           });
