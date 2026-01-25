@@ -1,0 +1,524 @@
+/* ============================================
+   ELEV.CSS - Pagina detalii elev
+   ============================================ */
+
+/* --- Reset și bază --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --success: #16a34a;
+  --error: #dc2626;
+  --warning: #f59e0b;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-900: #111827;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  /* Culori absențe */
+  --nemotivata: #dc2626;
+  --nemotivata-bg: #fee2e2;
+  --scutire-medicala: #16a34a;
+  --scutire-medicala-bg: #dcfce7;
+  --invoire-parinte: #2563eb;
+  --invoire-parinte-bg: #dbeafe;
+  --alt-motiv: #9333ea;
+  --alt-motiv-bg: #f3e8ff;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: var(--gray-50);
+  color: var(--gray-900);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* --- Container principal --- */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Header --- */
+.header {
+  margin-bottom: 16px;
+}
+
+.btn-back {
+  display: inline-block;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.btn-back:hover {
+  text-decoration: underline;
+}
+
+.nume-elev {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+
+.info-clasa {
+  color: var(--gray-500);
+  font-size: 0.95rem;
+}
+
+/* --- Navigație între elevi --- */
+.nav-elevi {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-nav {
+  padding: 8px 12px;
+  background-color: white;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.btn-nav:hover:not(:disabled) {
+  background-color: var(--gray-50);
+  border-color: var(--primary);
+}
+
+.btn-nav:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.select-elev {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* --- Sumar rapid --- */
+.sumar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sumar-card {
+  background-color: white;
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.sumar-valoare {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.sumar-eticheta {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- Tabs --- */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  background-color: var(--gray-100);
+  padding: 4px;
+  border-radius: var(--radius);
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--gray-500);
+}
+
+.tab:hover {
+  color: var(--gray-700);
+}
+
+.tab.active {
+  background-color: white;
+  color: var(--gray-900);
+  box-shadow: var(--shadow);
+}
+
+/* --- Conținut tab --- */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* --- Filtre absențe --- */
+.filtre {
+  margin-bottom: 16px;
+}
+
+.filtre-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  margin-bottom: 8px;
+}
+
+.filtre-butoane {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filtru {
+  padding: 6px 12px;
+  background-color: white;
+  border: 1px solid var(--gray-300);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filtru:hover {
+  border-color: var(--primary);
+}
+
+.filtru.active {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+/* --- Statistici absențe --- */
+.absente-stats {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  flex: 1;
+  background-color: white;
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-item.nemotivata {
+  border-left: 3px solid var(--nemotivata);
+}
+
+.stat-item.motivata {
+  border-left: 3px solid var(--success);
+}
+
+.stat-numar {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+/* --- Tabele --- */
+.tabel-container {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  background-color: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabel th,
+.tabel td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.tabel th {
+  background-color: var(--gray-50);
+  font-weight: 600;
+  color: var(--gray-700);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabel tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabel tbody tr:hover {
+  background-color: var(--gray-50);
+}
+
+/* --- Celule specifice --- */
+.celula-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.nota {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 2px 6px;
+  background-color: var(--gray-100);
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.nota.nota-mica {
+  background-color: var(--nemotivata-bg);
+  color: var(--nemotivata);
+}
+
+.nota.nota-medie {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.nota.nota-mare {
+  background-color: var(--scutire-medicala-bg);
+  color: var(--scutire-medicala);
+}
+
+.celula-media {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.celula-fara-note {
+  color: var(--gray-500);
+  font-style: italic;
+}
+
+/* --- Status absențe --- */
+.status-absenta {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.status-absenta.nemotivata {
+  background-color: var(--nemotivata-bg);
+  color: var(--nemotivata);
+}
+
+.status-absenta.scutire-medicala {
+  background-color: var(--scutire-medicala-bg);
+  color: var(--scutire-medicala);
+}
+
+.status-absenta.invoire-parinte {
+  background-color: var(--invoire-parinte-bg);
+  color: var(--invoire-parinte);
+}
+
+.status-absenta.alt-motiv {
+  background-color: var(--alt-motiv-bg);
+  color: var(--alt-motiv);
+}
+
+/* --- Mesaje --- */
+.mesaj-gol {
+  text-align: center;
+  padding: 24px;
+  color: var(--gray-500);
+  font-style: italic;
+}
+
+.mesaj-gol.hidden {
+  display: none;
+}
+
+/* --- Butoane --- */
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-export {
+  width: 100%;
+  background-color: var(--gray-100);
+  color: var(--gray-700);
+  margin-top: 8px;
+}
+
+.btn-export:hover {
+  background-color: var(--gray-200);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--gray-700);
+  border: 1px solid var(--gray-300);
+  width: 100%;
+}
+
+.btn-secondary:hover {
+  background-color: var(--gray-50);
+  border-color: var(--gray-500);
+}
+
+/* --- Footer --- */
+.footer {
+  margin-top: auto;
+  padding: 24px 0;
+}
+
+/* --- Rând ascuns (pentru filtrare) --- */
+.row-hidden {
+  display: none;
+}
+
+/* --- Desktop --- */
+@media (min-width: 768px) {
+  .container {
+    padding: 24px 32px;
+  }
+
+  .nume-elev {
+    font-size: 1.75rem;
+  }
+
+  .nav-elevi {
+    flex-wrap: nowrap;
+  }
+
+  .sumar-card {
+    padding: 20px 16px;
+  }
+
+  .sumar-valoare {
+    font-size: 2rem;
+  }
+
+  .sumar-eticheta {
+    font-size: 0.8rem;
+  }
+
+  .tabel th,
+  .tabel td {
+    padding: 14px 16px;
+  }
+
+  .btn-export {
+    width: auto;
+  }
+
+  .footer {
+    text-align: center;
+  }
+
+  .btn-secondary {
+    width: auto;
+    padding: 12px 32px;
+  }
+}
+/* --- Fix aliniere celule tabel --- */
+.tabel td {
+  vertical-align: middle;
+}
+
+.celula-materie {
+  min-width: 150px;
+}
+
+.celula-note {
+  min-width: 100px;
+}
+
+.celula-media {
+  min-width: 60px;
+  text-align: center;
+}
+
+.fara-note {
+  color: var(--gray-500);
+  font-style: italic;
+}
+
+/* --- Media implicită (purtare fără note) --- */
+.media-implicita {
+  font-style: italic;
+}
+
+/* --- Media penalizată --- */
+.media-penalizata {
+  color: var(--warning) !important;
+}

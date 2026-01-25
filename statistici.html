@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Statistici Clasă - Catalog Digital</title>
+    <link rel="stylesheet" href="statistici.css" />
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <!-- html2canvas library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Module aplicație -->
+    <script type="module">
+      import './js/statistici.js';
+      import { initExport } from './js/export-image.js';
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Așteptăm puțin pentru a se încărca datele
+        setTimeout(initExport, 100);
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <a href="index.html" class="btn-back">← Înapoi la listă</a>
+        <h1>Statistici Clasă</h1>
+        <p id="info-clasa" class="info-clasa">Clasa</p>
+      </header>
+
+      <!-- Sumar general -->
+      <section class="sumar-general">
+        <div class="sumar-card">
+          <span class="sumar-valoare" id="total-elevi">0</span>
+          <span class="sumar-eticheta">Elevi</span>
+        </div>
+        <div class="sumar-card">
+          <span class="sumar-valoare" id="media-clasa">-</span>
+          <span class="sumar-eticheta">Media clasei</span>
+        </div>
+        <div class="sumar-card">
+          <span class="sumar-valoare" id="total-absente-clasa">0</span>
+          <span class="sumar-eticheta">Total absențe</span>
+        </div>
+      </section>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="clasament">🏆 Clasament</button>
+        <button class="tab" data-tab="absente">📋 Absențe</button>
+      </div>
+
+      <!-- Tab Clasament -->
+      <section id="tab-clasament" class="tab-content active">
+        <div class="tabel-container">
+          <table id="tabel-clasament" class="tabel">
+            <thead>
+              <tr>
+                <th class="col-pozitie">#</th>
+                <th>Elev</th>
+                <th class="col-media">Media</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button id="btn-export-clasament" class="btn btn-export">📷 Exportă imagine</button>
+      </section>
+
+      <!-- Tab Absențe -->
+      <section id="tab-absente" class="tab-content">
+        <!-- Statistici globale absențe -->
+        <div class="absente-overview">
+          <h3 class="section-title">Sumar absențe</h3>
+          <div class="absente-stats-grid">
+            <div class="stat-box">
+              <span class="stat-numar" id="abs-total-clasa">0</span>
+              <span class="stat-label">Total</span>
+            </div>
+            <div class="stat-box nemotivata">
+              <span class="stat-numar" id="abs-nemotivate-clasa">0</span>
+              <span class="stat-label">Nemotivate</span>
+            </div>
+            <div class="stat-box scutire-medicala">
+              <span class="stat-numar" id="abs-scutire-clasa">0</span>
+              <span class="stat-label">Scutire med.</span>
+            </div>
+            <div class="stat-box invoire-parinte">
+              <span class="stat-numar" id="abs-invoire-clasa">0</span>
+              <span class="stat-label">Invoiere</span>
+            </div>
+            <div class="stat-box alt-motiv">
+              <span class="stat-numar" id="abs-altele-clasa">0</span>
+              <span class="stat-label">Alte motive</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabel absențe pe elevi -->
+        <div class="absente-elevi">
+          <h3 class="section-title">Absențe pe elevi</h3>
+          <p class="section-subtitle">Sortate descrescător după nemotivate</p>
+          <div class="tabel-container">
+            <table id="tabel-absente-elevi" class="tabel">
+              <thead>
+                <tr>
+                  <th>Elev</th>
+                  <th class="col-numar">Total</th>
+                  <th class="col-numar">Nemot.</th>
+                  <th class="col-numar">Mot.</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top absențe nemotivate -->
+        <div class="top-absente">
+          <h3 class="section-title">Top absențe nemotivate</h3>
+          <div id="top-nemotivate" class="top-lista"></div>
+        </div>
+
+        <button id="btn-export-absente" class="btn btn-export">📷 Exportă imagine</button>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <a href="index.html" class="btn btn-secondary">← Înapoi la listă elevi</a>
+      </footer>
+    </div>
+  </body>
+</html>

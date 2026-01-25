@@ -1,0 +1,319 @@
+/* ============================================
+   INDEX.CSS - Pagina de upload
+   ============================================ */
+
+/* --- Reset și bază --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --success: #16a34a;
+  --error: #dc2626;
+  --warning: #f59e0b;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-900: #111827;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: var(--gray-50);
+  color: var(--gray-900);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* --- Container principal --- */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Header --- */
+.header {
+  text-align: center;
+  padding: 24px 0;
+}
+
+.header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+
+.subtitlu {
+  color: var(--gray-500);
+  font-size: 0.95rem;
+}
+
+/* --- Secțiunea upload --- */
+.upload-section {
+  margin-bottom: 24px;
+}
+
+.drop-zone {
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--radius);
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+.drop-zone:hover {
+  border-color: var(--primary);
+  background-color: var(--gray-50);
+}
+
+.drop-zone.drag-over {
+  border-color: var(--primary);
+  background-color: #eff6ff;
+  border-style: solid;
+}
+
+.drop-zone-content {
+  pointer-events: none;
+}
+
+.upload-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--gray-500);
+  margin-bottom: 16px;
+}
+
+.drop-zone:hover .upload-icon,
+.drop-zone.drag-over .upload-icon {
+  color: var(--primary);
+}
+
+.drop-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  margin-bottom: 4px;
+}
+
+.drop-text-secondary {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+}
+
+/* --- Status upload --- */
+.upload-status {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  text-align: center;
+  display: none;
+}
+
+.upload-status:not(:empty) {
+  display: block;
+}
+
+.upload-status.status-loading {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.upload-status.status-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.upload-status.status-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* --- Container elevi --- */
+.elevi-container {
+  flex: 1;
+}
+
+.elevi-container.hidden {
+  display: none;
+}
+
+.elevi-titlu {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+/* --- Lista elevi --- */
+.elevi-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.elev-item {
+  display: block;
+  padding: 14px 16px;
+  background-color: white;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--gray-900);
+  font-weight: 500;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
+}
+
+.elev-item:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: translateX(4px);
+}
+
+.elev-item:active {
+  transform: translateX(2px);
+}
+
+/* --- Butoane --- */
+.actiuni {
+  margin-top: 16px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--gray-700);
+  border: 1px solid var(--gray-300);
+  width: 100%;
+}
+
+.btn-secondary:hover {
+  background-color: var(--gray-50);
+  border-color: var(--gray-500);
+}
+
+/* --- Footer --- */
+.footer {
+  margin-top: auto;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.btn-reset {
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+.btn-reset:hover {
+  color: var(--error);
+  text-decoration: underline;
+}
+
+/* --- Desktop --- */
+@media (min-width: 768px) {
+  .container {
+    padding: 32px;
+  }
+
+  .header {
+    padding: 32px 0;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .drop-zone {
+    padding: 60px 40px;
+  }
+
+  .upload-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .drop-text {
+    font-size: 1.25rem;
+  }
+
+  .elevi-lista {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .elev-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+/* --- Clase utilitare --- */
+.hidden {
+  display: none !important;
+}
+
+/* --- Buton arhivă nouă --- */
+.btn-arhiva-noua {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 12px 16px;
+  background: none;
+  border: 1px dashed var(--gray-300);
+  border-radius: var(--radius);
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-arhiva-noua:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background-color: var(--gray-50);
+}
