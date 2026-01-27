@@ -129,11 +129,11 @@ async function proceseazaFisier(file, statusEl) {
 
 function formateazaData(data) {
   const d = new Date(data);
-  const zi = String(d.getDate()).padStart(2, '0');
-  const luna = String(d.getMonth() + 1).padStart(2, '0');
-  const an = d.getFullYear();
-  const ora = String(d.getHours()).padStart(2, '0');
-  const min = String(d.getMinutes()).padStart(2, '0');
+  const zi = String(d.getUTCDate()).padStart(2, '0');
+  const luna = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const an = d.getUTCFullYear();
+  const ora = String(d.getUTCHours()).padStart(2, '0');
+  const min = String(d.getUTCMinutes()).padStart(2, '0');
   return `${zi}/${luna}/${an} ${ora}:${min}`;
 }
 
