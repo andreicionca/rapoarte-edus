@@ -1,25 +1,22 @@
-// ============================================
-// DATA STORE - Stocare date în sessionStorage
-// ============================================
-
 const STORAGE_KEYS = {
   NOTE: 'catalog_note',
   ABSENTE: 'catalog_absente',
   ELEVI: 'catalog_elevi',
   MATERII: 'catalog_materii',
   CLASA: 'catalog_clasa',
+  DATA_RAPORT: 'catalog_data_raport',
 };
 
-/**
- * Salvează datele în sessionStorage
- */
-function salveazaDate(note, absente, elevi, materii, clasa) {
+function salveazaDate(note, absente, elevi, materii, clasa, dataRaport = null) {
   try {
     sessionStorage.setItem(STORAGE_KEYS.NOTE, JSON.stringify(note));
     sessionStorage.setItem(STORAGE_KEYS.ABSENTE, JSON.stringify(absente));
     sessionStorage.setItem(STORAGE_KEYS.ELEVI, JSON.stringify(elevi));
     sessionStorage.setItem(STORAGE_KEYS.MATERII, JSON.stringify(materii));
     sessionStorage.setItem(STORAGE_KEYS.CLASA, clasa);
+    if (dataRaport) {
+      sessionStorage.setItem(STORAGE_KEYS.DATA_RAPORT, dataRaport);
+    }
     return true;
   } catch (error) {
     console.error('Eroare la salvarea datelor:', error);
@@ -27,9 +24,6 @@ function salveazaDate(note, absente, elevi, materii, clasa) {
   }
 }
 
-/**
- * Încarcă notele din sessionStorage
- */
 function incarcaNote() {
   try {
     const data = sessionStorage.getItem(STORAGE_KEYS.NOTE);
@@ -40,9 +34,6 @@ function incarcaNote() {
   }
 }
 
-/**
- * Încarcă absențele din sessionStorage
- */
 function incarcaAbsente() {
   try {
     const data = sessionStorage.getItem(STORAGE_KEYS.ABSENTE);
@@ -53,9 +44,6 @@ function incarcaAbsente() {
   }
 }
 
-/**
- * Încarcă lista de elevi din sessionStorage
- */
 function incarcaElevi() {
   try {
     const data = sessionStorage.getItem(STORAGE_KEYS.ELEVI);
@@ -66,9 +54,6 @@ function incarcaElevi() {
   }
 }
 
-/**
- * Încarcă lista de materii din sessionStorage
- */
 function incarcaMaterii() {
   try {
     const data = sessionStorage.getItem(STORAGE_KEYS.MATERII);
@@ -79,9 +64,6 @@ function incarcaMaterii() {
   }
 }
 
-/**
- * Încarcă numele clasei din sessionStorage
- */
 function incarcaClasa() {
   try {
     return sessionStorage.getItem(STORAGE_KEYS.CLASA) || '';
@@ -91,25 +73,25 @@ function incarcaClasa() {
   }
 }
 
-/**
- * Verifică dacă există date încărcate
- */
+function incarcaDataRaport() {
+  try {
+    return sessionStorage.getItem(STORAGE_KEYS.DATA_RAPORT) || '';
+  } catch (error) {
+    console.error('Eroare la încărcarea datei raportului:', error);
+    return '';
+  }
+}
+
 function existaDate() {
   return sessionStorage.getItem(STORAGE_KEYS.ELEVI) !== null;
 }
 
-/**
- * Șterge toate datele din sessionStorage
- */
 function stergeDate() {
   Object.values(STORAGE_KEYS).forEach((key) => {
     sessionStorage.removeItem(key);
   });
 }
 
-/**
- * Încarcă toate datele odată
- */
 function incarcaToateDate() {
   return {
     note: incarcaNote(),
@@ -117,6 +99,7 @@ function incarcaToateDate() {
     elevi: incarcaElevi(),
     materii: incarcaMaterii(),
     clasa: incarcaClasa(),
+    dataRaport: incarcaDataRaport(),
   };
 }
 
@@ -127,6 +110,7 @@ export {
   incarcaElevi,
   incarcaMaterii,
   incarcaClasa,
+  incarcaDataRaport,
   existaDate,
   stergeDate,
   incarcaToateDate,

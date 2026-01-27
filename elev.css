@@ -1,8 +1,3 @@
-/* ============================================
-   ELEV.CSS - Pagina detalii elev
-   ============================================ */
-
-/* --- Reset și bază --- */
 * {
   margin: 0;
   padding: 0;
@@ -25,16 +20,10 @@
   --radius: 8px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-  /* Culori absențe */
   --nemotivata: #dc2626;
   --nemotivata-bg: #fee2e2;
-  --scutire-medicala: #16a34a;
-  --scutire-medicala-bg: #dcfce7;
-  --invoire-parinte: #2563eb;
-  --invoire-parinte-bg: #dbeafe;
-  --alt-motiv: #9333ea;
-  --alt-motiv-bg: #f3e8ff;
+  --motivata: #16a34a;
+  --motivata-bg: #dcfce7;
 }
 
 body {
@@ -45,7 +34,10 @@ body {
   min-height: 100vh;
 }
 
-/* --- Container principal --- */
+.hidden {
+  display: none !important;
+}
+
 .container {
   max-width: 800px;
   margin: 0 auto;
@@ -55,7 +47,6 @@ body {
   flex-direction: column;
 }
 
-/* --- Header --- */
 .header {
   margin-bottom: 16px;
 }
@@ -85,7 +76,6 @@ body {
   font-size: 0.95rem;
 }
 
-/* --- Navigație între elevi --- */
 .nav-elevi {
   display: flex;
   gap: 8px;
@@ -126,7 +116,6 @@ body {
   cursor: pointer;
 }
 
-/* --- Sumar rapid --- */
 .sumar {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -157,7 +146,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* --- Tabs --- */
 .tabs {
   display: flex;
   gap: 4px;
@@ -190,16 +178,13 @@ body {
   box-shadow: var(--shadow);
 }
 
-/* --- Conținut tab --- */
 .tab-content {
   display: none;
 }
-
 .tab-content.active {
   display: block;
 }
 
-/* --- Filtre absențe --- */
 .filtre {
   margin-bottom: 16px;
 }
@@ -209,9 +194,14 @@ body {
   font-size: 0.85rem;
   color: var(--gray-500);
   margin-bottom: 8px;
+  margin-top: 12px;
 }
 
-.filtre-butoane {
+.filtre-label:first-child {
+  margin-top: 0;
+}
+
+.filtre-grup {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -237,7 +227,16 @@ body {
   color: white;
 }
 
-/* --- Statistici absențe --- */
+.filtru-luna {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+}
+
+.filtru-luna.active {
+  background-color: var(--gray-700);
+  border-color: var(--gray-700);
+}
+
 .absente-stats {
   display: flex;
   gap: 12px;
@@ -256,9 +255,8 @@ body {
 .stat-item.nemotivata {
   border-left: 3px solid var(--nemotivata);
 }
-
 .stat-item.motivata {
-  border-left: 3px solid var(--success);
+  border-left: 3px solid var(--motivata);
 }
 
 .stat-numar {
@@ -273,7 +271,6 @@ body {
   color: var(--gray-500);
 }
 
-/* --- Tabele --- */
 .tabel-container {
   overflow-x: auto;
   margin-bottom: 16px;
@@ -286,13 +283,15 @@ body {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  table-layout: fixed;
 }
 
 .tabel th,
 .tabel td {
-  padding: 12px;
+  padding: 12px 10px;
   text-align: left;
   border-bottom: 1px solid var(--gray-200);
+  vertical-align: top;
 }
 
 .tabel th {
@@ -307,25 +306,81 @@ body {
 .tabel tbody tr:last-child td {
   border-bottom: none;
 }
-
 .tabel tbody tr:hover {
   background-color: var(--gray-50);
 }
 
-/* --- Celule specifice --- */
-.celula-note {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+#tabel-note th:nth-child(1),
+#tabel-note td:nth-child(1) {
+  width: 50%;
 }
 
-.nota {
+#tabel-note th:nth-child(2),
+#tabel-note td:nth-child(2) {
+  width: 35%;
+}
+
+#tabel-note th:nth-child(3),
+#tabel-note td:nth-child(3) {
+  width: 15%;
+  text-align: center;
+}
+
+#tabel-absente th:nth-child(1),
+#tabel-absente td:nth-child(1) {
+  width: 18%;
+}
+
+#tabel-absente th:nth-child(2),
+#tabel-absente td:nth-child(2) {
+  width: 37%;
+}
+
+#tabel-absente th:nth-child(3),
+#tabel-absente td:nth-child(3) {
+  width: 20%;
+  text-align: center;
+}
+
+#tabel-absente th:nth-child(4),
+#tabel-absente td:nth-child(4) {
+  width: 25%;
+}
+
+.tabel-luni .tabel th:nth-child(1),
+.tabel-luni .tabel td:nth-child(1) {
+  width: 40%;
+}
+
+.tabel-luni .tabel th:nth-child(2),
+.tabel-luni .tabel td:nth-child(2),
+.tabel-luni .tabel th:nth-child(3),
+.tabel-luni .tabel td:nth-child(3),
+.tabel-luni .tabel th:nth-child(4),
+.tabel-luni .tabel td:nth-child(4) {
+  width: 20%;
+  text-align: center;
+}
+
+.tabel-motive .tabel th:nth-child(1),
+.tabel-motive .tabel td:nth-child(1) {
+  width: 70%;
+}
+
+.tabel-motive .tabel th:nth-child(2),
+.tabel-motive .tabel td:nth-child(2) {
+  width: 30%;
+  text-align: center;
+}
+
+.celula-note .nota {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 28px;
   height: 28px;
   padding: 2px 6px;
+  margin: 2px;
   background-color: var(--gray-100);
   border-radius: 4px;
   font-weight: 600;
@@ -343,21 +398,28 @@ body {
 }
 
 .nota.nota-mare {
-  background-color: var(--scutire-medicala-bg);
-  color: var(--scutire-medicala);
+  background-color: var(--motivata-bg);
+  color: var(--motivata);
 }
 
 .celula-media {
   font-weight: 700;
   color: var(--primary);
+  text-align: center;
 }
 
-.celula-fara-note {
+.fara-note {
   color: var(--gray-500);
   font-style: italic;
 }
 
-/* --- Status absențe --- */
+.media-implicita {
+  font-style: italic;
+}
+.media-penalizata {
+  color: var(--warning) !important;
+}
+
 .status-absenta {
   display: inline-block;
   padding: 4px 10px;
@@ -371,22 +433,21 @@ body {
   color: var(--nemotivata);
 }
 
-.status-absenta.scutire-medicala {
-  background-color: var(--scutire-medicala-bg);
-  color: var(--scutire-medicala);
+.status-absenta.motivata {
+  background-color: var(--motivata-bg);
+  color: var(--motivata);
 }
 
-.status-absenta.invoire-parinte {
-  background-color: var(--invoire-parinte-bg);
-  color: var(--invoire-parinte);
+.motiv-text {
+  font-size: 0.85rem;
+  color: var(--gray-700);
 }
 
-.status-absenta.alt-motiv {
-  background-color: var(--alt-motiv-bg);
-  color: var(--alt-motiv);
+.motiv-text.fara-motiv {
+  color: var(--gray-500);
+  font-style: italic;
 }
 
-/* --- Mesaje --- */
 .mesaj-gol {
   text-align: center;
   padding: 24px;
@@ -394,11 +455,6 @@ body {
   font-style: italic;
 }
 
-.mesaj-gol.hidden {
-  display: none;
-}
-
-/* --- Butoane --- */
 .btn {
   display: inline-block;
   padding: 12px 20px;
@@ -435,90 +491,98 @@ body {
   border-color: var(--gray-500);
 }
 
-/* --- Footer --- */
 .footer {
   margin-top: auto;
   padding: 24px 0;
 }
 
-/* --- Rând ascuns (pentru filtrare) --- */
 .row-hidden {
   display: none;
 }
 
-/* --- Desktop --- */
+.export-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.export-buttons .btn {
+  flex: 1;
+}
+
+.btn-whatsapp {
+  background-color: #dcfce7 !important;
+  color: #16a34a !important;
+  border: 1px solid #16a34a !important;
+}
+
+.btn-whatsapp:hover {
+  background-color: #bbf7d0 !important;
+}
+
 @media (min-width: 768px) {
   .container {
     padding: 24px 32px;
   }
-
   .nume-elev {
     font-size: 1.75rem;
   }
-
   .nav-elevi {
     flex-wrap: nowrap;
   }
-
   .sumar-card {
     padding: 20px 16px;
   }
-
   .sumar-valoare {
     font-size: 2rem;
   }
-
   .sumar-eticheta {
     font-size: 0.8rem;
   }
-
   .tabel th,
   .tabel td {
-    padding: 14px 16px;
+    padding: 14px 12px;
   }
-
   .btn-export {
     width: auto;
   }
-
   .footer {
     text-align: center;
   }
-
   .btn-secondary {
     width: auto;
     padding: 12px 32px;
   }
-}
-/* --- Fix aliniere celule tabel --- */
-.tabel td {
-  vertical-align: middle;
+
+  .btn-whatsapp {
+    display: none;
+  }
+
+  .export-buttons .btn {
+    flex: none;
+    width: auto;
+  }
 }
 
-.celula-materie {
-  min-width: 150px;
-}
-
-.celula-note {
-  min-width: 100px;
-}
-
-.celula-media {
-  min-width: 60px;
-  text-align: center;
-}
-
-.fara-note {
-  color: var(--gray-500);
-  font-style: italic;
-}
-
-/* --- Media implicită (purtare fără note) --- */
-.media-implicita {
-  font-style: italic;
-}
-
-/* --- Media penalizată --- */
-.media-penalizata {
-  color: var(--warning) !important;
+@media (max-width: 480px) {
+  .tabel {
+    font-size: 0.8rem;
+  }
+  .tabel th,
+  .tabel td {
+    padding: 8px 6px;
+  }
+  .celula-note .nota {
+    min-width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+  .status-absenta {
+    padding: 3px 8px;
+    font-size: 0.7rem;
+  }
+  #tabel-absente th:nth-child(4),
+  #tabel-absente td:nth-child(4) {
+    font-size: 0.7rem;
+  }
 }

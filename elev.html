@@ -6,37 +6,21 @@
     <title>Detalii Elev - Catalog Digital</title>
     <link rel="stylesheet" href="elev.css" />
     <link rel="icon" type="image/png" href="img/favicon.png" />
-    <!-- html2canvas library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <!-- Module aplicație -->
-    <script type="module">
-      import './js/elev.js';
-      import { initExport } from './js/export-image.js';
-
-      document.addEventListener('DOMContentLoaded', () => {
-        // Așteptăm puțin pentru a se încărca datele
-        setTimeout(initExport, 100);
-      });
-    </script>
   </head>
   <body>
     <div class="container">
-      <!-- Header cu navigație -->
       <header class="header">
         <a href="index.html" class="btn-back">← Înapoi</a>
         <h1 id="nume-elev" class="nume-elev">Nume Elev</h1>
         <p id="info-clasa" class="info-clasa">Clasa</p>
       </header>
 
-      <!-- Navigație între elevi -->
       <nav class="nav-elevi">
         <button id="btn-prev" class="btn-nav" disabled>← Anterior</button>
         <select id="select-elev" class="select-elev"></select>
         <button id="btn-next" class="btn-nav">Următor →</button>
       </nav>
 
-      <!-- Sumar rapid -->
       <section class="sumar">
         <div class="sumar-card">
           <span class="sumar-valoare" id="media-generala">-</span>
@@ -52,13 +36,11 @@
         </div>
       </section>
 
-      <!-- Tabs pentru Note / Absențe -->
       <div class="tabs">
         <button class="tab active" data-tab="note">📚 Note</button>
         <button class="tab" data-tab="absente">📋 Absențe</button>
       </div>
 
-      <!-- Conținut Tab Note -->
       <section id="tab-note" class="tab-content active">
         <div class="tabel-container">
           <table id="tabel-note" class="tabel">
@@ -72,24 +54,27 @@
             <tbody></tbody>
           </table>
         </div>
-        <button id="btn-export-note" class="btn btn-export">📷 Exportă imagine</button>
+        <div class="export-buttons">
+          <button id="btn-export-note" class="btn btn-export">📥 Descarcă</button>
+          <button id="btn-share-note" class="btn btn-export btn-whatsapp">
+            🟢 Trimite pe WhatsApp
+          </button>
+        </div>
       </section>
 
-      <!-- Conținut Tab Absențe -->
       <section id="tab-absente" class="tab-content">
-        <!-- Filtre absențe -->
         <div class="filtre">
-          <span class="filtre-label">Filtrează:</span>
-          <div class="filtre-butoane">
+          <span class="filtre-label">Status:</span>
+          <div class="filtre-grup" id="filtre-status">
             <button class="filtru active" data-filtru="toate">Toate</button>
             <button class="filtru" data-filtru="nemotivata">Nemotivate</button>
-            <button class="filtru" data-filtru="scutire-medicala">Scutire med.</button>
-            <button class="filtru" data-filtru="invoire-parinte">Invoiere</button>
-            <button class="filtru" data-filtru="alt-motiv">Alte motive</button>
+            <button class="filtru" data-filtru="motivata">Motivate</button>
           </div>
+
+          <span class="filtre-label">Lună:</span>
+          <div class="filtre-grup" id="filtre-luni"></div>
         </div>
 
-        <!-- Statistici absențe elev -->
         <div class="absente-stats">
           <div class="stat-item">
             <span class="stat-numar" id="abs-total">0</span>
@@ -105,26 +90,70 @@
           </div>
         </div>
 
-        <div class="tabel-container">
+        <div class="tabel-luni tabel-container">
+          <table id="tabel-stats-luni" class="tabel">
+            <thead>
+              <tr>
+                <th>Luna</th>
+                <th>Total</th>
+                <th>Motivate</th>
+                <th>Nemotivate</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="tabel-motive tabel-container">
+          <table id="tabel-stats-motive" class="tabel">
+            <thead>
+              <tr>
+                <th>Motivul absențelor motivate</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="tabel-container tabel-absente-lista">
           <table id="tabel-absente" class="tabel">
             <thead>
               <tr>
                 <th>Data</th>
                 <th>Materia</th>
                 <th>Status</th>
+                <th>Motiv</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
         </div>
+
         <p id="absente-goale" class="mesaj-gol hidden">Nu există absențe înregistrate.</p>
-        <button id="btn-export-absente" class="btn btn-export">📷 Exportă imagine</button>
+        <div class="export-buttons">
+          <button id="btn-export-absente" class="btn btn-export">📥 Descarcă PDF</button>
+          <button id="btn-share-absente" class="btn btn-export btn-whatsapp">
+            🟢 Trimite pe WhatsApp
+          </button>
+        </div>
       </section>
 
-      <!-- Footer -->
       <footer class="footer">
         <a href="statistici.html" class="btn btn-secondary">📊 Statistici clasă</a>
       </footer>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
+
+    <script type="module">
+      import './js/elev.js';
+      import { initExport } from './js/export-image.js';
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initExport, 100);
+      });
+    </script>
   </body>
 </html>
