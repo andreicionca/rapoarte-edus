@@ -581,8 +581,40 @@ body {
     padding: 3px 8px;
     font-size: 0.7rem;
   }
+
+  /* Fix tabel absențe pe mobil */
+  #tabel-absente {
+    table-layout: auto;
+  }
+
+  #tabel-absente th:nth-child(1),
+  #tabel-absente td:nth-child(1) {
+    width: auto;
+    min-width: 70px;
+    white-space: nowrap;
+  }
+
+  #tabel-absente th:nth-child(2),
+  #tabel-absente td:nth-child(2) {
+    width: auto;
+    word-break: break-word;
+  }
+
+  #tabel-absente th:nth-child(3),
+  #tabel-absente td:nth-child(3) {
+    width: auto;
+    min-width: 65px;
+  }
+
   #tabel-absente th:nth-child(4),
   #tabel-absente td:nth-child(4) {
+    width: auto;
+    min-width: 60px;
+    font-size: 0.65rem;
+    word-break: break-word;
+  }
+
+  .motiv-text {
     font-size: 0.7rem;
   }
 }
