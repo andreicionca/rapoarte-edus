@@ -20,19 +20,30 @@
         <select id="select-elev" class="select-elev"></select>
         <button id="btn-next" class="btn-nav">Următor →</button>
       </nav>
-
       <section class="sumar">
-        <div class="sumar-card">
-          <span class="sumar-valoare" id="media-generala">-</span>
-          <span class="sumar-eticheta">Media generală</span>
+        <div class="sumar-rand">
+          <div class="sumar-card">
+            <span class="sumar-eticheta">Media generală</span>
+            <span class="sumar-valoare" id="media-generala">-</span>
+          </div>
+          <div class="sumar-card">
+            <span class="sumar-eticheta">Poziția în clasă</span>
+            <span class="sumar-valoare" id="pozitie-clasament">-</span>
+          </div>
         </div>
-        <div class="sumar-card">
-          <span class="sumar-valoare" id="pozitie-clasament">-</span>
-          <span class="sumar-eticheta">Poziția în clasă</span>
-        </div>
-        <div class="sumar-card">
-          <span class="sumar-valoare" id="total-absente">-</span>
-          <span class="sumar-eticheta">Total absențe</span>
+        <div class="sumar-rand">
+          <div class="sumar-card">
+            <span class="sumar-eticheta">Total absențe</span>
+            <span class="sumar-valoare" id="total-absente">-</span>
+          </div>
+          <div class="sumar-card sumar-card--nemotivata">
+            <span class="sumar-eticheta">Nemotivate</span>
+            <span class="sumar-valoare" id="abs-nemotivate">-</span>
+          </div>
+          <div class="sumar-card sumar-card--motivata">
+            <span class="sumar-eticheta">Motivate</span>
+            <span class="sumar-valoare" id="abs-motivate">-</span>
+          </div>
         </div>
       </section>
 
@@ -73,21 +84,6 @@
 
           <span class="filtre-label">Lună:</span>
           <div class="filtre-grup" id="filtre-luni"></div>
-        </div>
-
-        <div class="absente-stats">
-          <div class="stat-item">
-            <span class="stat-numar" id="abs-total">0</span>
-            <span class="stat-label">Total</span>
-          </div>
-          <div class="stat-item nemotivata">
-            <span class="stat-numar" id="abs-nemotivate">0</span>
-            <span class="stat-label">Nemotivate</span>
-          </div>
-          <div class="stat-item motivata">
-            <span class="stat-numar" id="abs-motivate">0</span>
-            <span class="stat-label">Motivate</span>
-          </div>
         </div>
 
         <div class="tabel-luni tabel-container">
