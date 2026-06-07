@@ -299,7 +299,7 @@ async function exportAbsentePDF(actiune) {
     doc.text('Sumar Absente', margin, y);
     y += 8;
 
-    const absTotal = document.getElementById('abs-total')?.textContent || '0';
+    const absTotal = document.getElementById('total-absente')?.textContent || '0';
     const absNemotivate = document.getElementById('abs-nemotivate')?.textContent || '0';
     const absMotivate = document.getElementById('abs-motivate')?.textContent || '0';
 
