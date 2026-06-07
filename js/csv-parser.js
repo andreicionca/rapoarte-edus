@@ -254,8 +254,10 @@ function calculeazaClasament(note, elevi, absente = []) {
 
   let pozitie = 1;
   return medii.map((item, index) => {
-    if (index > 0 && item.media !== medii[index - 1].media) {
-      pozitie = index + 1;
+    if (index > 0) {
+      if (item.media !== medii[index - 1].media) {
+        pozitie++; // ← doar +1, nu index + 1
+      }
     }
     return {
       ...item,
