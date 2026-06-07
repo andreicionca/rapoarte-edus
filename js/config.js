@@ -38,7 +38,7 @@ const CONFIG = {
   // --- Etichete afișate în interfață ---
   ETICHETE: {
     SCUTIRE_MEDICALA: 'Scutire medicală',
-    INVOIRE_PARINTE: 'Invoiere părinte',
+    INVOIRE_PARINTE: 'Invoire părinte',
     ALT_MOTIV: 'Alte motive',
     NEMOTIVATA: 'Nemotivată',
   },
