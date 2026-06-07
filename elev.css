@@ -20,6 +20,7 @@
   --radius: 8px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --totalabsente: #374151;
   --nemotivata: #dc2626;
   --nemotivata-bg: #fee2e2;
   --motivata: #16a34a;
@@ -142,6 +143,10 @@ body {
 
 .sumar-rand:last-child {
   grid-template-columns: repeat(3, 1fr);
+}
+
+.sumar-card--totalabsente .sumar-valoare {
+  color: var(--totalabsente);
 }
 
 .sumar-card--nemotivata .sumar-valoare {
@@ -370,7 +375,7 @@ body {
 
 .tabel-luni .tabel th:nth-child(1),
 .tabel-luni .tabel td:nth-child(1) {
-  width: 40%;
+  width: 20%;
 }
 
 .tabel-luni .tabel th:nth-child(2),
