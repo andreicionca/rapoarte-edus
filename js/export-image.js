@@ -128,21 +128,33 @@ async function exportNote(actiune) {
     container.appendChild(header);
 
     const sumar = document.createElement('div');
-    sumar.style.cssText = 'display: flex; gap: 16px; margin-bottom: 20px;';
+    sumar.style.cssText = 'margin-bottom: 20px;';
     sumar.innerHTML = `
-      <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 24px; font-weight: 700; color: #2563eb;">${getMediaGenerala()}</div>
-        <div style="font-size: 11px; color: #6b7280; text-transform: uppercase;">Media generala</div>
-      </div>
-      <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 24px; font-weight: 700; color: #2563eb;">${getPozitieClasament()}</div>
-        <div style="font-size: 11px; color: #6b7280; text-transform: uppercase;">Pozitia in clasa</div>
-      </div>
-      <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 24px; font-weight: 700; color: #2563eb;">${getTotalAbsente()}</div>
-        <div style="font-size: 11px; color: #6b7280; text-transform: uppercase;">Total absente</div>
-      </div>
-    `;
+  <div style="display: flex; gap: 12px; margin-bottom: 8px;">
+    <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">Media generala</div>
+      <div style="font-size: 24px; font-weight: 700; color: #2563eb;">${getMediaGenerala()}</div>
+    </div>
+    <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">Pozitia in clasament</div>
+      <div style="font-size: 24px; font-weight: 700; color: #2563eb;">${getPozitieClasament()}</div>
+    </div>
+  </div>
+  <div style="display: flex; gap: 12px;">
+    <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">Total absente</div>
+      <div style="font-size: 24px; font-weight: 700; color: #374151;">${getTotalAbsente()}</div>
+    </div>
+    <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">Absente nemotivate</div>
+      <div style="font-size: 24px; font-weight: 700; color: #dc2626;">${document.getElementById('abs-nemotivate')?.textContent || '0'}</div>
+    </div>
+    <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">Absente motivate</div>
+      <div style="font-size: 24px; font-weight: 700; color: #16a34a;">${document.getElementById('abs-motivate')?.textContent || '0'}</div>
+    </div>
+  </div>
+`;
     container.appendChild(sumar);
 
     const tabelClonat = tabel.cloneNode(true);
