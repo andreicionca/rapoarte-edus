@@ -376,6 +376,12 @@ function afiseazaTabelNote(noteElev, absenteNemotivate) {
       const rezultat = calculeazaMediaMaterie(noteValori, materie, absenteNemotivate);
       tdMedia.textContent = rezultat.mediaRotunjita;
 
+      if (parseFloat(rezultat.mediaRotunjita) < 5) {
+        tdMedia.style.color = 'var(--error)';
+      } else {
+        tdMedia.style.color = ''; // resetează dacă navighez la alt elev
+      }
+
       if (estePurtare && rezultat.penalizare > 0) {
         tdMedia.title = `Media notelor: ${Math.round(rezultat.mediaExacta)} | Penalizare: -${rezultat.penalizare} | Final: ${rezultat.mediaRotunjita}`;
         tdMedia.classList.add('media-penalizata');
