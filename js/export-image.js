@@ -135,6 +135,10 @@ async function exportNote(actiune) {
       <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">Media generala</div>
       <div style="font-size: 24px; font-weight: 700; color: #2563eb;">${getMediaGenerala()}</div>
     </div>
+ <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">Nr. corigente</div>
+      <div style="font-size: 24px; font-weight: 700; color: #dc2626;">${document.getElementById('nr-corigente')?.textContent || '0'}</div>
+    </div>
     <div style="flex: 1; background: #f3f4f6; border-radius: 8px; padding: 12px; text-align: center;">
       <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">Pozitia in clasament</div>
       <div style="font-size: 24px; font-weight: 700; color: #2563eb;">${getPozitieClasament()}</div>

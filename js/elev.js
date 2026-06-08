@@ -301,6 +301,11 @@ function afiseazaElev() {
 
   const statsAbsente = calculeazaStatisticiAbsente(absenteElevCurent);
 
+  const nrCorigente = calculeazaCoriguente(absenteNemotivate);
+  const elCorigente = document.getElementById('nr-corigente');
+  elCorigente.textContent = nrCorigente;
+  elCorigente.style.color = nrCorigente > 0 ? 'var(--error)' : 'var(--primary)';
+
   afiseazaSumar(media, pozitieElev, statsAbsente.total);
   afiseazaTabelNote(noteElev, absenteNemotivate);
   afiseazaTabelAbsente(absenteElevCurent);
@@ -560,6 +565,35 @@ function calculeazaStatisticiAbsente(absenteElev) {
   });
 
   return stats;
+}
+
+function calculeazaCoriguente(absenteNemotivate) {
+  const noteElev = getNoteElev(dateIncarcate.note, elevCurent);
+  const notePerMaterie = {};
+
+  dateIncarcate.materii.forEach((materie) => {
+    notePerMaterie[materie] = [];
+  });
+
+  noteElev.forEach((nota) => {
+    const materie = nota[CONFIG.NOTE.MATERIE];
+    if (notePerMaterie[materie]) {
+      notePerMaterie[materie].push(parseFloat(nota[CONFIG.NOTE.NOTA]));
+    }
+  });
+
+  let corigente = 0;
+  dateIncarcate.materii.forEach((materie) => {
+    const note = notePerMaterie[materie];
+    if (note.length > 0) {
+      const rezultat = calculeazaMediaMaterie(note, materie, absenteNemotivate);
+      if (parseFloat(rezultat.mediaRotunjita) < 5) {
+        corigente++;
+      }
+    }
+  });
+
+  return corigente;
 }
 
 function afiseazaStatisticiAbsenteUI(stats) {
