@@ -1,3 +1,5 @@
+// js/csv-parser.js
+
 import CONFIG from './config.js';
 
 function parseCSV(csvText) {

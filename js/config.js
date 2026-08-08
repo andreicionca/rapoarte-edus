@@ -1,3 +1,4 @@
+// js/config.js
 // ============================================
 // ⭐ CONFIGURAȚIE - MODIFICĂ AICI DACĂ SE SCHIMBĂ COLOANELE
 // ============================================

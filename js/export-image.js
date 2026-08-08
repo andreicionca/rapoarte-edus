@@ -1,3 +1,5 @@
+// js/export-image.js
+
 import { incarcaToateDate } from './data-store.js';
 
 let exportInitializat = false;
@@ -264,6 +266,14 @@ function stilizeazaTabel(tabel) {
   const penalizate = tabel.querySelectorAll('.media-penalizata');
   penalizate.forEach((el) => {
     el.style.color = '#f59e0b';
+  });
+
+  const mediiRosii = tabel.querySelectorAll('.celula-media');
+  mediiRosii.forEach((celula) => {
+    const valoare = parseFloat(celula.textContent);
+    if (!isNaN(valoare) && valoare < 5) {
+      celula.style.color = '#dc2626';
+    }
   });
 }
 

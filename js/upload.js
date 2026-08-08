@@ -1,3 +1,5 @@
+// js/upload.js
+
 import CONFIG from './config.js';
 import { parseCSV, extractElevi, extractMaterii } from './csv-parser.js';
 import { salveazaDate } from './data-store.js';

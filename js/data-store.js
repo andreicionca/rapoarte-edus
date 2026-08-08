@@ -1,3 +1,5 @@
+// js/data-store.js
+
 const STORAGE_KEYS = {
   NOTE: 'catalog_note',
   ABSENTE: 'catalog_absente',
