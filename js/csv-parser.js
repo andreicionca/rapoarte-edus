@@ -208,66 +208,6 @@ function calculeazaMediaMaterie(noteMaterie, numeMaterie, absenteNemotivate = 0)
   return { mediaExacta, mediaRotunjita, penalizare };
 }
 
-function calculeazaMedia(note, numeElev, absente = []) {
-  const noteElev = getNoteElev(note, numeElev);
-  if (noteElev.length === 0) return null;
-
-  const absenteNemotivate = getNumarAbsenteNemotivate(absente, numeElev);
-
-  const notePerMaterie = {};
-  noteElev.forEach((row) => {
-    const materie = row[CONFIG.NOTE.MATERIE];
-    const nota = parseFloat(row[CONFIG.NOTE.NOTA]);
-    if (!isNaN(nota)) {
-      if (!notePerMaterie[materie]) {
-        notePerMaterie[materie] = [];
-      }
-      notePerMaterie[materie].push(nota);
-    }
-  });
-
-  const mediiRotunjite = [];
-  for (const materie in notePerMaterie) {
-    const noteMaterie = notePerMaterie[materie];
-    if (noteMaterie.length > 0) {
-      const rezultat = calculeazaMediaMaterie(noteMaterie, materie, absenteNemotivate);
-      mediiRotunjite.push(rezultat.mediaRotunjita);
-    }
-  }
-
-  if (mediiRotunjite.length === 0) return null;
-
-  const sumaMediai = mediiRotunjite.reduce((acc, m) => acc + m, 0);
-  return sumaMediai / mediiRotunjite.length;
-}
-
-function calculeazaClasament(note, elevi, absente = []) {
-  const medii = elevi.map((elev) => ({
-    elev,
-    media: calculeazaMedia(note, elev, absente),
-  }));
-
-  medii.sort((a, b) => {
-    if (a.media === null && b.media === null) return 0;
-    if (a.media === null) return 1;
-    if (b.media === null) return -1;
-    return b.media - a.media;
-  });
-
-  let pozitie = 1;
-  return medii.map((item, index) => {
-    if (index > 0) {
-      if (item.media !== medii[index - 1].media) {
-        pozitie++; // ← doar +1, nu index + 1
-      }
-    }
-    return {
-      ...item,
-      pozitie: item.media !== null ? pozitie : null,
-    };
-  });
-}
-
 export {
   parseCSV,
   parseData,
@@ -280,6 +220,4 @@ export {
   getNumarAbsenteNemotivate,
   calculeazaPenalizarePurtare,
   calculeazaMediaMaterie,
-  calculeazaMedia,
-  calculeazaClasament,
 };

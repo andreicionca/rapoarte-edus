@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Detalii Elev - Catalog Digital</title>
     <link rel="stylesheet" href="elev.css" />
+    <link rel="stylesheet" href="common.css" />
     <link rel="icon" type="image/png" href="img/favicon.png" />
   </head>
   <body>
@@ -13,6 +14,7 @@
         <a href="index.html" class="btn-back">← Înapoi</a>
         <h1 id="nume-elev" class="nume-elev">Nume Elev</h1>
         <p id="info-clasa" class="info-clasa">Clasa</p>
+        <p id="status-elev" class="status-elev"></p>
       </header>
 
       <nav class="nav-elevi">
@@ -20,6 +22,7 @@
         <select id="select-elev" class="select-elev"></select>
         <button id="btn-next" class="btn-nav">Următor →</button>
       </nav>
+      <p class="hint-tastatura">Folosiți tastele ← și → pentru elevul anterior sau următor.</p>
       <section class="sumar">
         <div class="sumar-rand">
           <div class="sumar-card">
@@ -68,6 +71,18 @@
             </thead>
             <tbody></tbody>
           </table>
+        </div>
+        <div class="situatie-controls">
+          <button id="btn-rezultate-corigente" type="button" class="btn btn-secondary">
+            Rezultate corigențe
+          </button>
+          <button id="btn-situatie-neincheiati" type="button" class="btn btn-secondary">
+            Situație neîncheiați
+          </button>
+          <label class="toggle-corigenti">
+            <input id="toggle-etichete-corigenti" type="checkbox" />
+            Afișează eticheta „Corigent”
+          </label>
         </div>
         <div class="export-buttons">
           <button id="btn-export-note" class="btn btn-export">📥 Descarcă</button>

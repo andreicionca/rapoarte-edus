@@ -317,3 +317,83 @@ body {
   color: var(--primary);
   background-color: var(--gray-50);
 }
+
+.examene-actiuni {
+  display: flex;
+  gap: 8px;
+}
+
+.actiuni .examene-actiuni .btn-examen {
+  flex: 1;
+  width: auto;
+  padding: 11px 10px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  background: white;
+  color: var(--gray-700);
+  font-size: 0.88rem;
+}
+
+.actiuni .examene-actiuni .btn-examen:hover {
+  border-color: var(--primary);
+  background: #eff6ff;
+  color: var(--primary);
+}
+
+.actiuni .examene-actiuni .btn-examen-principal {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.actiuni .examene-actiuni .btn-examen-principal:hover {
+  background: var(--primary-dark);
+  color: white;
+}
+
+@media (max-width: 520px) {
+  .examene-actiuni {
+    flex-direction: column;
+  }
+}
+
+.transfer-situatii {
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.transfer-explicatie {
+  margin: 0 0 10px;
+  color: var(--gray-500);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.transfer-actiuni {
+  display: flex;
+  gap: 8px;
+}
+
+.actiuni .transfer-actiuni .btn-transfer {
+  flex: 1;
+  width: auto;
+  padding: 9px 10px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  background: var(--gray-50);
+  color: var(--gray-700);
+  font-size: 0.8rem;
+}
+
+.actiuni .transfer-actiuni .btn-transfer:hover {
+  border-color: var(--primary);
+  background: #eff6ff;
+  color: var(--primary);
+}
+
+@media (max-width: 520px) {
+  .transfer-actiuni {
+    flex-direction: column;
+  }
+}

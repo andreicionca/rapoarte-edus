@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rapoarte catalog electronic</title>
     <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="common.css" />
     <link rel="icon" type="image/png" href="img/favicon.png" />
   </head>
   <body>
@@ -32,7 +33,7 @@
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
               <p class="drop-text">Trage arhiva ZIP aici</p>
-              <p class="drop-text-secondary">sau click pentru a selecta</p>
+              <p class="drop-text-secondary">sau dați click aici pentru a selecta și încărca</p>
             </div>
             <input type="file" id="file-input" accept=".zip" hidden />
           </div>
@@ -46,6 +47,36 @@
 
           <div class="actiuni">
             <a href="statistici.html" class="btn btn-secondary"> 📊 Statistici clasă </a>
+            <div class="examene-actiuni">
+              <button
+                id="btn-rezultate-corigente"
+                type="button"
+                class="btn btn-examen btn-examen-principal"
+              >
+                Rezultate corigențe
+              </button>
+
+              <button id="btn-situatie-neincheiati" type="button" class="btn btn-examen">
+                Situație neîncheiați
+              </button>
+            </div>
+            <div class="transfer-situatii">
+              <p class="transfer-explicatie">
+                Pentru comutarea pe alt browser sau calculator, puteți copia rapid rezultatele
+                corigențelor și situațiile neîncheiate introduse aici. Pe celălalt browser,
+                încărcați același raport ZIP, apoi lipiți datele copiate.
+              </p>
+
+              <div class="transfer-actiuni">
+                <button id="btn-copiaza-situatii" type="button" class="btn btn-transfer">
+                  📋 Copiază pentru alt browser
+                </button>
+
+                <button id="btn-lipeste-situatii" type="button" class="btn btn-transfer">
+                  📥 Lipește datele copiate
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -59,7 +90,8 @@
     <!-- Module aplicație -->
     <script type="module">
       import { initUpload, verificaDateExistente } from './js/upload.js';
-      import { existaDate, stergeDate } from './js/data-store.js';
+      import { existaDate, stergeDate, incarcaToateDate } from './js/data-store.js';
+      import { initExameneUI } from './js/examene-ui.js';
 
       // Expunem funcțiile necesare global pentru upload.js
       window.dataStore = {
@@ -75,9 +107,9 @@
           // Ascundem zona de upload
           document.querySelector('.upload-section').classList.add('hidden');
           // Afișăm lista de elevi
-          const { incarcaToateDate } = await import('./js/data-store.js');
           const date = incarcaToateDate();
           afiseazaListaEleviDirect(date.elevi, date.clasa);
+          initExameneUI(date);
         }
 
         // Buton pentru încărcare altă arhivă
@@ -88,6 +120,10 @@
             location.reload();
           });
         }
+      });
+
+      document.addEventListener('rapoarte:date-incarcate', () => {
+        initExameneUI(incarcaToateDate(), { propuneAutomat: true });
       });
 
       function afiseazaListaEleviDirect(elevi, clasa) {

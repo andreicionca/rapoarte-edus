@@ -54,6 +54,7 @@ const CONFIG = {
 
   PURTARE: {
     NUME_MATERIE: 'Purtare',
+    NUMAR_MODULE: 5,
     PENALIZARI_ABSENTE: [
       { min: 0, max: 19, puncte: 0 },
       { min: 20, max: 39, puncte: 1 },
@@ -63,6 +64,27 @@ const CONFIG = {
       { min: 100, max: Infinity, puncte: 5 },
     ],
     MEDIA_MINIMA: 1,
+  },
+
+  // --- Situații școlare și examene ---
+  // Perioada se modifică doar aici. Lunile sunt numerotate normal: iunie = 6, septembrie = 9.
+  EXAMENE: {
+    PRAG_CORIGENTA: 4.5,
+    NOTA_PROMOVARE: 5,
+    NOTA_MINIMA: 1,
+    NOTA_MAXIMA: 10,
+    PROPUNERE_AUTOMATA: true,
+    PERIOADA: {
+      INCEPUT: { zi: 15, luna: 6 },
+      SFARSIT: { zi: 15, luna: 9 },
+    },
+  },
+
+  // --- Medii și absențe pentru Religie penticostală ---
+  RELIGIE_PENTICOSTALA: {
+    ACTIV: true,
+    FISIER: './date/religie-penticostala.json',
+    NUME_MATERIE: 'Religie penticostală',
   },
 };
 
