@@ -251,12 +251,12 @@ function propuneRezultateAutomat() {
   const neincheiati = obtineCandidati('neincheiati');
   if (!existaRezultateNeintroduse(corigenti, neincheiati)) return;
 
-  const overlay = deschideModal('Rezultate pentru situațiile școlare');
+  const overlay = deschideModal('Rezultate examene de corigență și încheiere a situației școlare');
   const body = overlay.querySelector('.modal-body');
   const footer = overlay.querySelector('.modal-footer');
   const mesaj = document.createElement('p');
   mesaj.textContent =
-    'Raportul conține situații pentru care pot fi introduse rezultate de examen. Doriți să le completați acum?';
+    'Puteți introduce rezultate pentru situațiile speciale de final de an școlar: elevi corigenți sau elevi care au participat la examenele de încheiere a situației școlare. Doriți să le completați acum?';
   body.appendChild(mesaj);
   adaugaAvertismentLocal(body);
 
