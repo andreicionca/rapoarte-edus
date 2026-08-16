@@ -3,6 +3,8 @@
 import CONFIG from './config.js';
 import { parseCSV, extractElevi, extractMaterii } from './csv-parser.js';
 import { salveazaDate } from './data-store.js';
+import { determinaAnScolar } from './situatie-scolara.js';
+import { incarcaReligiePenticostala } from './religie-penticostala.js';
 
 function initUpload() {
   const dropZone = document.getElementById('drop-zone');
@@ -64,7 +66,7 @@ async function proceseazaFisier(file, statusEl) {
     for (const [filename, zipEntry] of Object.entries(zip.files)) {
       if (zipEntry.dir) continue;
 
-      const numeFisier = filename.toLowerCase();
+      const numeFisier = filename.split('/').pop().toLowerCase();
 
       if (numeFisier.includes('note') && numeFisier.endsWith('.csv')) {
         noteCSV = await zipEntry.async('string');
@@ -96,7 +98,7 @@ async function proceseazaFisier(file, statusEl) {
     }
 
     const note = parseCSV(noteCSV);
-    const absente = parseCSV(absenteCSV);
+    let absente = parseCSV(absenteCSV);
 
     if (note.length === 0) {
       afiseazaStatus(statusEl, 'Eroare: Fișierul note.csv este gol sau invalid.', 'error');
@@ -108,8 +110,34 @@ async function proceseazaFisier(file, statusEl) {
     const clasa = note[0]?.[CONFIG.NOTE.CLASA] || 'Necunoscută';
 
     const dataRaportString = dataRaport ? formateazaData(dataRaport) : formateazaData(new Date());
+    const anScolar = determinaAnScolar(dataRaportString);
+    const importReligie = await incarcaReligiePenticostala({ elevi, clasa, anScolar });
 
-    const salvat = salveazaDate(note, absente, elevi, materii, clasa, dataRaportString);
+    absente = [...absente, ...importReligie.absente];
+    if (
+      importReligie.mediiSpeciale.length > 0 &&
+      !materii.includes(CONFIG.RELIGIE_PENTICOSTALA.NUME_MATERIE)
+    ) {
+      materii.push(CONFIG.RELIGIE_PENTICOSTALA.NUME_MATERIE);
+      materii.sort((a, b) => a.localeCompare(b, 'ro'));
+    }
+
+    const salvat = salveazaDate(
+      note,
+      absente,
+      elevi,
+      materii,
+      clasa,
+      dataRaportString,
+      anScolar,
+      importReligie.mediiSpeciale,
+      {
+        religiePenticostala: {
+          eleviGasiti: importReligie.eleviGasiti,
+          avertismente: importReligie.avertismente,
+        },
+      }
+    );
 
     if (!salvat) {
       afiseazaStatus(statusEl, 'Eroare: Nu s-au putut salva datele.', 'error');
@@ -118,11 +146,18 @@ async function proceseazaFisier(file, statusEl) {
 
     afiseazaStatus(
       statusEl,
-      `Succes! ${elevi.length} elevi încărcați. Raport din ${dataRaportString}.`,
+      `Succes! ${elevi.length} elevi încărcați. Raport din ${dataRaportString}.` +
+        (importReligie.eleviGasiti > 0
+          ? ` Religie penticostală: ${importReligie.eleviGasiti} elevi.`
+          : '') +
+        (importReligie.avertismente.length > 0
+          ? ` Atenție: ${importReligie.avertismente.join(' ')}`
+          : ''),
       'success'
     );
 
     afiseazaListaElevi(elevi, clasa);
+    document.dispatchEvent(new CustomEvent('rapoarte:date-incarcate'));
   } catch (error) {
     console.error('Eroare la procesarea arhivei:', error);
     afiseazaStatus(statusEl, 'Eroare: Nu s-a putut procesa arhiva.', 'error');

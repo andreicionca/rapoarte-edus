@@ -1,17 +1,19 @@
 // js/elev.js
 
 import CONFIG from './config.js';
-import {
-  getNoteElev,
-  getAbsenteElev,
-  getTipAbsenta,
-  calculeazaMedia,
-  calculeazaClasament,
-  calculeazaMediaMaterie,
-  getNumarAbsenteNemotivate,
-  parseData,
-} from './csv-parser.js';
+import { getNoteElev, getAbsenteElev, getTipAbsenta, parseData } from './csv-parser.js';
 import { incarcaToateDate, existaDate } from './data-store.js';
+import {
+  calculeazaClasamentComplet,
+  calculeazaSituatieElev,
+  numarParticipantiClasament,
+} from './situatie-scolara.js';
+import {
+  confirmaSchimbareNeincheiat,
+  initExameneUI,
+  seteazaEticheteCorigentiVizibile,
+  suntEticheteCorigentiVizibile,
+} from './examene-ui.js';
 
 const LUNI_NUME = {
   9: 'Sep',
@@ -69,8 +71,11 @@ function init() {
   elevCurent = dateIncarcate.elevi[indexElevCurent];
 
   initNavigatie();
+  initNavigatieTastatura();
   initTabs();
   initFiltreStatus();
+  initControlEtichete();
+  initExameneUI(dateIncarcate, { onChange: afiseazaElev });
   afiseazaElev();
 }
 
@@ -123,6 +128,42 @@ function actualizeazaButoaneNavigatie() {
   const btnNext = document.getElementById('btn-next');
   if (btnPrev) btnPrev.disabled = indexElevCurent === 0;
   if (btnNext) btnNext.disabled = indexElevCurent === dateIncarcate.elevi.length - 1;
+}
+
+function initNavigatieTastatura() {
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+    if (!document.getElementById('modal-situatii-scolare')?.classList.contains('hidden')) return;
+    const tinta = event.target;
+    if (
+      tinta instanceof HTMLInputElement ||
+      tinta instanceof HTMLTextAreaElement ||
+      tinta instanceof HTMLSelectElement ||
+      tinta instanceof HTMLButtonElement ||
+      tinta?.isContentEditable
+    ) {
+      return;
+    }
+    if (event.key === 'ArrowLeft' && indexElevCurent > 0) {
+      event.preventDefault();
+      navigheazaLaElev(indexElevCurent - 1);
+    }
+    if (event.key === 'ArrowRight' && indexElevCurent < dateIncarcate.elevi.length - 1) {
+      event.preventDefault();
+      navigheazaLaElev(indexElevCurent + 1);
+    }
+  });
+}
+
+function initControlEtichete() {
+  const checkbox = document.getElementById('toggle-etichete-corigenti');
+  if (!checkbox) return;
+  checkbox.checked = suntEticheteCorigentiVizibile();
+  checkbox.addEventListener('change', () => {
+    seteazaEticheteCorigentiVizibile(checkbox.checked);
+    afiseazaElev();
+  });
 }
 
 function initTabs() {
@@ -178,14 +219,17 @@ function initFiltreLuni(absente) {
     }
   });
 
-  container.addEventListener('click', (e) => {
-    if (e.target.classList.contains('filtru-luna')) {
-      container.querySelectorAll('.filtru-luna').forEach((f) => f.classList.remove('active'));
-      e.target.classList.add('active');
-      filtruLunaActiva = e.target.dataset.filtru;
-      aplicaFiltre();
-    }
-  });
+  if (!container.dataset.initializat) {
+    container.dataset.initializat = 'true';
+    container.addEventListener('click', (e) => {
+      if (e.target.classList.contains('filtru-luna')) {
+        container.querySelectorAll('.filtru-luna').forEach((f) => f.classList.remove('active'));
+        e.target.classList.add('active');
+        filtruLunaActiva = e.target.dataset.filtru;
+        aplicaFiltre();
+      }
+    });
+  }
 }
 
 function resetFiltre() {
@@ -291,25 +335,18 @@ function afiseazaElev() {
 
   const noteElev = getNoteElev(dateIncarcate.note, elevCurent);
   absenteElevCurent = getAbsenteElev(dateIncarcate.absente, elevCurent);
-  const absenteNemotivate = getNumarAbsenteNemotivate(dateIncarcate.absente, elevCurent);
-
-  const media = calculeazaMedia(dateIncarcate.note, elevCurent, dateIncarcate.absente);
-  const clasament = calculeazaClasament(
-    dateIncarcate.note,
-    dateIncarcate.elevi,
-    dateIncarcate.absente
-  );
+  const situatieElev = calculeazaSituatieElev(dateIncarcate, elevCurent);
+  const clasament = calculeazaClasamentComplet(dateIncarcate);
   const pozitieElev = clasament.find((c) => c.elev === elevCurent);
 
   const statsAbsente = calculeazaStatisticiAbsente(absenteElevCurent);
 
-  const nrCorigente = calculeazaCoriguente(absenteNemotivate);
   const elCorigente = document.getElementById('nr-corigente');
-  elCorigente.textContent = nrCorigente;
-  elCorigente.style.color = nrCorigente > 0 ? 'var(--error)' : 'var(--primary)';
+  elCorigente.textContent = situatieElev.nrCorigente;
+  elCorigente.style.color = situatieElev.nrCorigente > 0 ? 'var(--error)' : 'var(--primary)';
 
-  afiseazaSumar(media, pozitieElev, statsAbsente.total);
-  afiseazaTabelNote(noteElev, absenteNemotivate);
+  afiseazaSumar(situatieElev, pozitieElev, clasament, statsAbsente.total);
+  afiseazaTabelNote(noteElev, situatieElev);
   afiseazaTabelAbsente(absenteElevCurent);
   afiseazaStatisticiAbsenteUI(statsAbsente);
   afiseazaTabelStatisticiLuni(absenteElevCurent);
@@ -317,20 +354,43 @@ function afiseazaElev() {
   initFiltreLuni(absenteElevCurent);
 }
 
-function afiseazaSumar(media, pozitieElev, totalAbsente) {
+function afiseazaSumar(situatieElev, pozitieElev, clasament, totalAbsente) {
   const mediaEl = document.getElementById('media-generala');
   const pozitieEl = document.getElementById('pozitie-clasament');
   const absenteEl = document.getElementById('total-absente');
+  const statusEl = document.getElementById('status-elev');
 
-  if (mediaEl) mediaEl.textContent = media !== null ? media.toFixed(2) : '-';
+  if (mediaEl) {
+    mediaEl.textContent =
+      situatieElev.mediaGenerala !== null ? situatieElev.mediaGenerala.toFixed(2) : '-';
+  }
   if (pozitieEl) {
     pozitieEl.textContent =
-      pozitieElev?.pozitie !== null ? `${pozitieElev.pozitie}/${dateIncarcate.elevi.length}` : '-';
+      pozitieElev?.pozitie !== null
+        ? `${pozitieElev.pozitie}/${numarParticipantiClasament(clasament)}`
+        : '-';
   }
   if (absenteEl) absenteEl.textContent = totalAbsente;
+  if (statusEl) {
+    statusEl.className = 'status-elev';
+    if (situatieElev.nepromovat) {
+      statusEl.textContent = situatieElev.nepromovatPrinPurtare
+        ? 'Nepromovat – nota la purtare'
+        : 'Nepromovat';
+      statusEl.classList.add('status-elev--nepromovat');
+    } else if (situatieElev.nrNeincheiate > 0) {
+      statusEl.textContent = 'Situație cu elev neîncheiat';
+      statusEl.classList.add('status-elev--atentie');
+    } else if (situatieElev.nrCorigente > 0) {
+      statusEl.textContent = 'Situație cu corigențe';
+      statusEl.classList.add('status-elev--atentie');
+    } else {
+      statusEl.textContent = '';
+    }
+  }
 }
 
-function afiseazaTabelNote(noteElev, absenteNemotivate) {
+function afiseazaTabelNote(noteElev, situatieElev) {
   const tbody = document.querySelector('#tabel-note tbody');
   if (!tbody) return;
 
@@ -353,6 +413,7 @@ function afiseazaTabelNote(noteElev, absenteNemotivate) {
 
   dateIncarcate.materii.forEach((materie) => {
     const note = notePerMaterie[materie];
+    const situatie = situatieElev.materii.find((item) => item.materie === materie);
     const tr = document.createElement('tr');
 
     const tdMaterie = document.createElement('td');
@@ -376,41 +437,110 @@ function afiseazaTabelNote(noteElev, absenteNemotivate) {
 
     const tdMedia = document.createElement('td');
     tdMedia.className = 'celula-media';
-    const estePurtare = materie === CONFIG.PURTARE.NUME_MATERIE;
-
-    if (note.length > 0) {
-      const noteValori = note.map((n) => n.valoare);
-      const rezultat = calculeazaMediaMaterie(noteValori, materie, absenteNemotivate);
-      tdMedia.textContent = rezultat.mediaRotunjita;
-
-      if (parseFloat(rezultat.mediaRotunjita) < 5) {
-        tdMedia.style.color = 'var(--error)';
-      } else {
-        tdMedia.style.color = ''; // resetează dacă navighez la alt elev
-      }
-
-      if (estePurtare && rezultat.penalizare > 0) {
-        tdMedia.title = `Media notelor: ${Math.round(rezultat.mediaExacta)} | Penalizare: -${rezultat.penalizare} | Final: ${rezultat.mediaRotunjita}`;
-        tdMedia.classList.add('media-penalizata');
-      } else {
-        tdMedia.title = `Media exactă: ${rezultat.mediaExacta.toFixed(2)}`;
-      }
-    } else if (estePurtare) {
-      const rezultat = calculeazaMediaMaterie([10], materie, absenteNemotivate);
-      tdMedia.textContent = rezultat.mediaRotunjita;
-      if (rezultat.penalizare > 0) {
-        tdMedia.title = `Media implicită: 10 | Penalizare: -${rezultat.penalizare} | Final: ${rezultat.mediaRotunjita}`;
-        tdMedia.classList.add('media-penalizata');
-      } else {
-        tdMedia.title = 'Media implicită: 10';
-      }
-      tdMedia.classList.add('media-implicita');
-    } else {
-      tdMedia.innerHTML = '<span class="fara-note">-</span>';
-    }
+    redaCelulaMedie(tdMedia, situatie);
     tr.appendChild(tdMedia);
 
     tbody.appendChild(tr);
+  });
+}
+
+function adaugaEtapaMedie(container, valoare, eticheta, tip, esteEsec = false) {
+  const etapa = document.createElement('div');
+  etapa.className = `etapa-medie etapa-medie--${tip}`;
+  const cifra = document.createElement('span');
+  cifra.className = 'valoare-medie';
+  cifra.textContent = Number.isInteger(Number(valoare))
+    ? String(Number(valoare))
+    : Number(valoare).toFixed(2);
+  if (esteEsec) cifra.classList.add('valoare-medie--esec');
+  etapa.appendChild(cifra);
+  if (eticheta) {
+    const text = document.createElement('span');
+    text.className = `eticheta-medie eticheta-medie--${tip}`;
+    text.textContent = eticheta;
+    etapa.appendChild(text);
+  }
+  container.appendChild(etapa);
+}
+
+function redaCelulaMedie(tdMedia, situatie) {
+  if (!situatie || situatie.mediaInitiala === null) {
+    tdMedia.innerHTML = '<span class="fara-note">-</span>';
+    return;
+  }
+
+  const afiseazaCorigent = suntEticheteCorigentiVizibile();
+  const etape = document.createElement('div');
+  etape.className = 'medie-etape';
+  let etichetaInitiala = '';
+  if (situatie.neincheiat) etichetaInitiala = 'Neîncheiat';
+  else if (situatie.corigentInitial && afiseazaCorigent) etichetaInitiala = 'Corigent';
+
+  adaugaEtapaMedie(
+    etape,
+    situatie.mediaInitiala,
+    etichetaInitiala,
+    situatie.neincheiat ? 'neincheiat' : situatie.corigentInitial ? 'corigent' : 'initiala',
+    situatie.mediaInitiala < 5 || situatie.neincheiat
+  );
+
+  if (situatie.rezultatIncheiere !== null) {
+    adaugaEtapaMedie(
+      etape,
+      situatie.rezultatIncheiere,
+      situatie.corigentDupaIncheiere && afiseazaCorigent
+        ? 'Rezultat examen de încheiere · Corigent'
+        : 'Rezultat examen de încheiere',
+      'incheiere',
+      situatie.rezultatIncheiere < CONFIG.EXAMENE.NOTA_PROMOVARE
+    );
+  }
+  if (situatie.rezultatCorigenta !== null) {
+    adaugaEtapaMedie(
+      etape,
+      situatie.rezultatCorigenta,
+      'Rezultat corigență',
+      'corigenta',
+      situatie.rezultatCorigenta < CONFIG.EXAMENE.NOTA_PROMOVARE
+    );
+  }
+  tdMedia.appendChild(etape);
+
+  if (situatie.mediaImplicita) tdMedia.classList.add('media-implicita');
+  if (situatie.penalizarePurtare > 0) tdMedia.classList.add('media-penalizata');
+
+  if (situatie.estePurtare) {
+    const sursa = situatie.mediaImplicita
+      ? 'Media disciplinară implicită: 10'
+      : `Media exactă a celor ${situatie.note.length}/${CONFIG.PURTARE.NUMAR_MODULE} note modulare: ${situatie.mediaExactaInitiala.toFixed(2)}; rotunjită: ${situatie.mediaDisciplinaraRotunjita}`;
+    tdMedia.title = `${sursa}; penalizare pentru absențe nemotivate: -${situatie.penalizarePurtare}; nota finală: ${situatie.mediaInitiala}.`;
+    return;
+  }
+
+  const actiune = situatie.neincheiat
+    ? 'Elevul este marcat ca neîncheiat. Apăsați pentru anularea marcării.'
+    : 'Apăsați pe medie dacă doriți să marcați elevul ca neîncheiat la această materie.';
+  tdMedia.title = `Media exactă: ${situatie.mediaExactaInitiala.toFixed(2)}. ${actiune}`;
+  tdMedia.classList.add('celula-media--interactiva');
+  tdMedia.tabIndex = 0;
+  tdMedia.setAttribute('role', 'button');
+  tdMedia.setAttribute('aria-label', actiune);
+
+  const schimbaMarcajul = async () => {
+    const schimbat = await confirmaSchimbareNeincheiat(
+      dateIncarcate,
+      elevCurent,
+      situatie.materie,
+      situatie.neincheiat
+    );
+    if (schimbat) afiseazaElev();
+  };
+  tdMedia.addEventListener('click', schimbaMarcajul);
+  tdMedia.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      schimbaMarcajul();
+    }
   });
 }
 
@@ -454,7 +584,7 @@ function afiseazaTabelAbsente(absenteElev) {
     tr.dataset.luna = luna;
 
     const tdData = document.createElement('td');
-    tdData.textContent = absenta[CONFIG.ABSENTE.DATA];
+    tdData.textContent = absenta[CONFIG.ABSENTE.DATA] || 'Fără dată';
     tr.appendChild(tdData);
 
     const tdMaterie = document.createElement('td');
@@ -567,35 +697,6 @@ function calculeazaStatisticiAbsente(absenteElev) {
   });
 
   return stats;
-}
-
-function calculeazaCoriguente(absenteNemotivate) {
-  const noteElev = getNoteElev(dateIncarcate.note, elevCurent);
-  const notePerMaterie = {};
-
-  dateIncarcate.materii.forEach((materie) => {
-    notePerMaterie[materie] = [];
-  });
-
-  noteElev.forEach((nota) => {
-    const materie = nota[CONFIG.NOTE.MATERIE];
-    if (notePerMaterie[materie]) {
-      notePerMaterie[materie].push(parseFloat(nota[CONFIG.NOTE.NOTA]));
-    }
-  });
-
-  let corigente = 0;
-  dateIncarcate.materii.forEach((materie) => {
-    const note = notePerMaterie[materie];
-    if (note.length > 0) {
-      const rezultat = calculeazaMediaMaterie(note, materie, absenteNemotivate);
-      if (parseFloat(rezultat.mediaRotunjita) < 5) {
-        corigente++;
-      }
-    }
-  });
-
-  return corigente;
 }
 
 function afiseazaStatisticiAbsenteUI(stats) {

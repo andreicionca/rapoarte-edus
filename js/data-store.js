@@ -7,15 +7,31 @@ const STORAGE_KEYS = {
   MATERII: 'catalog_materii',
   CLASA: 'catalog_clasa',
   DATA_RAPORT: 'catalog_data_raport',
+  AN_SCOLAR: 'catalog_an_scolar',
+  MEDII_SPECIALE: 'catalog_medii_speciale',
+  INFO_IMPORT: 'catalog_info_import',
 };
 
-function salveazaDate(note, absente, elevi, materii, clasa, dataRaport = null) {
+function salveazaDate(
+  note,
+  absente,
+  elevi,
+  materii,
+  clasa,
+  dataRaport = null,
+  anScolar = '',
+  mediiSpeciale = [],
+  infoImport = null
+) {
   try {
     sessionStorage.setItem(STORAGE_KEYS.NOTE, JSON.stringify(note));
     sessionStorage.setItem(STORAGE_KEYS.ABSENTE, JSON.stringify(absente));
     sessionStorage.setItem(STORAGE_KEYS.ELEVI, JSON.stringify(elevi));
     sessionStorage.setItem(STORAGE_KEYS.MATERII, JSON.stringify(materii));
     sessionStorage.setItem(STORAGE_KEYS.CLASA, clasa);
+    sessionStorage.setItem(STORAGE_KEYS.AN_SCOLAR, anScolar);
+    sessionStorage.setItem(STORAGE_KEYS.MEDII_SPECIALE, JSON.stringify(mediiSpeciale));
+    sessionStorage.setItem(STORAGE_KEYS.INFO_IMPORT, JSON.stringify(infoImport || {}));
     if (dataRaport) {
       sessionStorage.setItem(STORAGE_KEYS.DATA_RAPORT, dataRaport);
     }
@@ -84,6 +100,35 @@ function incarcaDataRaport() {
   }
 }
 
+function incarcaAnScolar() {
+  try {
+    return sessionStorage.getItem(STORAGE_KEYS.AN_SCOLAR) || '';
+  } catch (error) {
+    console.error('Eroare la încărcarea anului școlar:', error);
+    return '';
+  }
+}
+
+function incarcaMediiSpeciale() {
+  try {
+    const data = sessionStorage.getItem(STORAGE_KEYS.MEDII_SPECIALE);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Eroare la încărcarea mediilor speciale:', error);
+    return [];
+  }
+}
+
+function incarcaInfoImport() {
+  try {
+    const data = sessionStorage.getItem(STORAGE_KEYS.INFO_IMPORT);
+    return data ? JSON.parse(data) : {};
+  } catch (error) {
+    console.error('Eroare la încărcarea informațiilor de import:', error);
+    return {};
+  }
+}
+
 function existaDate() {
   return sessionStorage.getItem(STORAGE_KEYS.ELEVI) !== null;
 }
@@ -102,6 +147,9 @@ function incarcaToateDate() {
     materii: incarcaMaterii(),
     clasa: incarcaClasa(),
     dataRaport: incarcaDataRaport(),
+    anScolar: incarcaAnScolar(),
+    mediiSpeciale: incarcaMediiSpeciale(),
+    infoImport: incarcaInfoImport(),
   };
 }
 
@@ -113,6 +161,9 @@ export {
   incarcaMaterii,
   incarcaClasa,
   incarcaDataRaport,
+  incarcaAnScolar,
+  incarcaMediiSpeciale,
+  incarcaInfoImport,
   existaDate,
   stergeDate,
   incarcaToateDate,

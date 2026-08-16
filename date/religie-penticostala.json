@@ -1,0 +1,138 @@
+{
+  "versiune": 1,
+  "anScolar": "2025-2026",
+  "elevi": [
+    {
+      "clasa": "12 A",
+      "nume": "Bindiu M. Oana-Karina",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "12 A",
+      "nume": "Săsăran E. V. Mihai-Andrei",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "9 A",
+      "nume": "Bârle V. Denis",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "10 A",
+      "nume": "Ciurdaș E. Iosif-Elisei",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "11 A",
+      "nume": "Lupșe R. David Natanael",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "10 B",
+      "nume": "Pomânar G. David Emanuel",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "10 B",
+      "nume": "Șușca I. David Ilie",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "10 C",
+      "nume": "Blotor G. R. Radu",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "10 C",
+      "nume": "Crișan G. Elias-Cristian",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "10 C",
+      "nume": "Magyarosi Z. Iosif-Daniel",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "10 E",
+      "nume": "Kis C. N. Mario-Eduard",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "11 B",
+      "nume": "Bonaț G. Luca George",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "11 E",
+      "nume": "Chinte A. I. Debora",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "11 E",
+      "nume": "Petran D. David",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "12 B",
+      "nume": "Chiuzbăian D. David",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "12 D",
+      "nume": "Ciurdaș D. Filip-Georgel",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "12 D",
+      "nume": "Rus V. Daniel",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "12 E",
+      "nume": "Ianoș C. S. Sebastian-Mihai",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "9 B",
+      "nume": "Mureşan B. Filip",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "9 C",
+      "nume": "Bota Marcus-Daniel",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "9 D",
+      "nume": "Indre F. I. Raluca-Maria",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    },
+    {
+      "clasa": "9 E",
+      "nume": "Druță F. I. Cristian Emanuel",
+      "media": 10,
+      "absente": { "motivate": 0, "nemotivate": 0 }
+    }
+  ]
+}

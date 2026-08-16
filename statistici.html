@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Statistici Clasă - Catalog Digital</title>
     <link rel="stylesheet" href="statistici.css" />
+    <link rel="stylesheet" href="common.css" />
     <link rel="icon" type="image/png" href="img/favicon.png" />
     <!-- html2canvas library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -53,6 +54,14 @@
 
       <!-- Tab Clasament -->
       <section id="tab-clasament" class="tab-content active">
+        <div class="situatie-controls">
+          <button id="btn-rezultate-corigente" type="button" class="btn btn-secondary">
+            Rezultate corigențe
+          </button>
+          <button id="btn-situatie-neincheiati" type="button" class="btn btn-secondary">
+            Situație neîncheiați
+          </button>
+        </div>
         <div class="tabel-container">
           <table id="tabel-clasament" class="tabel">
             <thead>
@@ -60,6 +69,7 @@
                 <th class="col-pozitie">#</th>
                 <th>Elev</th>
                 <th class="col-media">Media</th>
+                <th class="col-status">Situație</th>
               </tr>
             </thead>
             <tbody></tbody>

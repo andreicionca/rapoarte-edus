@@ -6,10 +6,10 @@ import CONFIG from './config.js';
 import {
   getAbsenteElev,
   getTipAbsenta,
-  calculeazaMedia,
-  calculeazaClasament,
 } from './csv-parser.js';
 import { incarcaToateDate, existaDate } from './data-store.js';
+import { calculeazaClasamentComplet } from './situatie-scolara.js';
+import { initExameneUI } from './examene-ui.js';
 
 // Variabile globale pagină
 let dateIncarcate = null;
@@ -37,6 +37,7 @@ function init() {
 
   // Afișăm statisticile
   afiseazaStatistici();
+  initExameneUI(dateIncarcate, { onChange: afiseazaStatistici });
 }
 
 /**
@@ -70,7 +71,7 @@ function afiseazaStatistici() {
   document.getElementById('info-clasa').textContent = `Clasa ${dateIncarcate.clasa}`;
 
   // Calculăm clasamentul
-  const clasament = calculeazaClasament(dateIncarcate.note, dateIncarcate.elevi);
+  const clasament = calculeazaClasamentComplet(dateIncarcate);
 
   // Calculăm statistici absențe pentru toți elevii
   const statisticiAbsente = calculeazaStatisticiAbsenteClasa();
@@ -99,9 +100,9 @@ function afiseazaSumarGeneral(clasament, statisticiAbsente) {
   document.getElementById('total-elevi').textContent = dateIncarcate.elevi.length;
 
   // Media clasei
-  const mediiValide = clasament.filter((c) => c.media !== null);
+  const mediiValide = clasament.filter((c) => c.participaClasament);
   if (mediiValide.length > 0) {
-    const sumaMediai = mediiValide.reduce((acc, c) => acc + c.media, 0);
+    const sumaMediai = mediiValide.reduce((acc, c) => acc + c.mediaGenerala, 0);
     const mediaClasa = sumaMediai / mediiValide.length;
     document.getElementById('media-clasa').textContent = mediaClasa.toFixed(2);
   } else {
@@ -149,8 +150,29 @@ function afiseazaTabelClasament(clasament) {
     // Coloana medie
     const tdMedia = document.createElement('td');
     tdMedia.className = 'col-media';
-    tdMedia.textContent = item.media !== null ? item.media.toFixed(2) : '-';
+    tdMedia.textContent = item.mediaGenerala !== null ? item.mediaGenerala.toFixed(2) : '-';
     tr.appendChild(tdMedia);
+
+    const tdStatus = document.createElement('td');
+    tdStatus.className = 'col-status';
+    const status = document.createElement('span');
+    status.className = 'badge-situatie';
+    if (item.nepromovat) {
+      status.textContent = 'Nepromovat';
+      status.classList.add('badge-situatie--nepromovat');
+      tr.classList.add('rand-nepromovat');
+    } else if (item.nrNeincheiate > 0) {
+      status.textContent = 'Neîncheiat';
+      status.classList.add('badge-situatie--atentie');
+    } else if (item.nrCorigente > 0) {
+      status.textContent = 'Corigent';
+      status.classList.add('badge-situatie--atentie');
+    } else {
+      status.textContent = 'Promovat';
+      status.classList.add('badge-situatie--promovat');
+    }
+    tdStatus.appendChild(status);
+    tr.appendChild(tdStatus);
 
     tbody.appendChild(tr);
   });
