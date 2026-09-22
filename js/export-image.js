@@ -13,6 +13,11 @@ function initExport() {
     btnExportNote.addEventListener('click', () => exportNote('download'));
   }
 
+  const btnPrintNote = document.getElementById('btn-print-note');
+  if (btnPrintNote) {
+    btnPrintNote.addEventListener('click', printNote);
+  }
+
   const btnShareNote = document.getElementById('btn-share-note');
   if (btnShareNote) {
     btnShareNote.addEventListener('click', () => exportNote('share'));
@@ -93,6 +98,135 @@ function genereazaNumeFisier(numeElev, tip, extensie) {
 
   const numeNormalizat = normalizeazaText(numeElev).replace(/[^a-zA-Z0-9]/g, '_');
   return `${numeNormalizat}_${tip}_${zi}-${luna}-${an}_${ora}-${min}.${extensie}`;
+}
+
+function creeazaElementPrint(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+function printNote() {
+  const tabel = document.getElementById('tabel-note');
+  if (!tabel) {
+    alert('Tabelul nu a fost găsit.');
+    return;
+  }
+
+  const iframe = document.createElement('iframe');
+  iframe.setAttribute('title', 'Tipărire situație note');
+  iframe.setAttribute('aria-hidden', 'true');
+  iframe.style.cssText =
+    'position:fixed;right:100%;bottom:100%;width:1px;height:1px;border:0;';
+  document.body.appendChild(iframe);
+
+  const printDocument = iframe.contentDocument;
+  printDocument.open();
+  printDocument.write(`<!doctype html>
+    <html lang="ro">
+      <head>
+        <meta charset="UTF-8">
+        <title>Note - situație școlară</title>
+        <style>
+          @page { size: A4 portrait; margin: 10mm; }
+          * { box-sizing: border-box; }
+          html, body { margin: 0; padding: 0; }
+          body { color: #111827; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }
+          .print-header { border-bottom: 1px solid #d1d5db; margin-bottom: 4mm; padding-bottom: 3mm; }
+          .print-title { margin: 0 0 1.2mm; font-size: 17pt; line-height: 1.15; }
+          .print-subtitle { margin: 0; color: #6b7280; font-size: 10pt; }
+          .print-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5mm; margin-bottom: 4mm; }
+          .print-card { border-radius: 2.5mm; background: #f3f4f6 !important; padding: 2.5mm 2mm; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .print-label { color: #6b7280; font-size: 7pt; font-weight: 500; text-transform: uppercase; }
+          .print-value { color: #2563eb; font-size: 15pt; font-weight: 700; line-height: 1.25; }
+          .print-card--danger .print-value { color: #dc2626; }
+          .print-card--success .print-value { color: #16a34a; }
+          .print-card--neutral .print-value { color: #374151; }
+          table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+          thead { display: table-header-group; }
+          tr { break-inside: avoid; page-break-inside: avoid; }
+          th, td { border: 1px solid #dbe1e8; padding: 2mm 2.2mm; text-align: left; vertical-align: middle; }
+          th { background: #f3f4f6 !important; color: #374151; font-size: 7.5pt; font-weight: 600; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          th:nth-child(1), td:nth-child(1) { width: 40%; }
+          th:nth-child(2), td:nth-child(2) { width: 45%; }
+          th:nth-child(3), td:nth-child(3) { width: 15%; text-align: center; }
+          .celula-note { display: table-cell; }
+          .nota { display: inline-flex; min-width: 6.2mm; height: 6.2mm; margin: .7mm; padding: 0 1.2mm; align-items: center; justify-content: center; border-radius: 1.2mm; font-size: 8pt; font-weight: 600; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .nota-mica { background: #fee2e2 !important; color: #dc2626; }
+          .nota-medie { background: #fef3c7 !important; color: #92400e; }
+          .nota-mare { background: #dcfce7 !important; color: #059669; }
+          .celula-media { padding: 0; color: #2563eb; font-weight: 700; }
+          .medie-etape { display: flex; min-height: 100%; flex-direction: column; }
+          .etapa-medie { display: flex; min-height: 11mm; padding: 1.5mm 1mm; align-items: center; justify-content: center; flex-direction: column; gap: .8mm; }
+          .etapa-medie + .etapa-medie { border-top: 1px solid #e5e7eb; }
+          .valoare-medie { color: #2563eb; font-size: 11pt; font-weight: 800; line-height: 1; }
+          .valoare-medie--esec, .etapa-medie--neincheiat .valoare-medie { color: #dc2626; }
+          .eticheta-medie { color: #6b7280; font-size: 6pt; font-weight: 700; line-height: 1.15; text-align: center; }
+          .eticheta-medie--corigent, .eticheta-medie--neincheiat { border-radius: 999px; background: #fee2e2 !important; color: #dc2626; padding: .5mm 1.2mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .media-penalizata .etapa-medie--initiala .valoare-medie { color: #d97706; }
+          .print-footer { margin-top: 4mm; border-top: 1px solid #d1d5db; padding-top: 2mm; color: #6b7280; font-size: 8pt; text-align: right; }
+        </style>
+      </head>
+      <body></body>
+    </html>`);
+  printDocument.close();
+
+  const header = creeazaElementPrint('header', 'print-header');
+  header.appendChild(creeazaElementPrint('h1', 'print-title', getNumeElev()));
+  header.appendChild(creeazaElementPrint('p', 'print-subtitle', getClasa()));
+
+  const summary = creeazaElementPrint('section', 'print-summary');
+  [
+    ['Media generală', getMediaGenerala(), ''],
+    [
+      'Nr. corigențe',
+      document.getElementById('nr-corigente')?.textContent || '0',
+      'print-card--danger',
+    ],
+    ['Poziția în clasament', getPozitieClasament(), ''],
+    ['Total absențe', getTotalAbsente(), 'print-card--neutral'],
+    [
+      'Absențe nemotivate',
+      document.getElementById('abs-nemotivate')?.textContent || '0',
+      'print-card--danger',
+    ],
+    [
+      'Absențe motivate',
+      document.getElementById('abs-motivate')?.textContent || '0',
+      'print-card--success',
+    ],
+  ].forEach(([label, value, modifier]) => {
+    const card = creeazaElementPrint('div', `print-card ${modifier}`.trim());
+    card.appendChild(creeazaElementPrint('div', 'print-label', label));
+    card.appendChild(creeazaElementPrint('div', 'print-value', value));
+    summary.appendChild(card);
+  });
+
+  const tabelPrint = printDocument.importNode(tabel, true);
+  tabelPrint.removeAttribute('id');
+  const footer = creeazaElementPrint(
+    'footer',
+    'print-footer',
+    `Raport generat din datele din: ${getDataRaport()}`,
+  );
+
+  printDocument.body.append(
+    printDocument.importNode(header, true),
+    printDocument.importNode(summary, true),
+    tabelPrint,
+    printDocument.importNode(footer, true),
+  );
+
+  const inchideFereastraPrint = () => {
+    window.setTimeout(() => iframe.remove(), 500);
+  };
+  iframe.contentWindow.addEventListener('afterprint', inchideFereastraPrint, { once: true });
+  window.setTimeout(() => {
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    window.setTimeout(inchideFereastraPrint, 60_000);
+  }, 150);
 }
 
 async function exportNote(actiune) {

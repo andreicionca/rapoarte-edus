@@ -505,6 +505,16 @@ body {
   background-color: var(--gray-200);
 }
 
+.btn-print {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.btn-print:hover {
+  background-color: #dbeafe;
+}
+
 .btn-secondary {
   background-color: white;
   color: var(--gray-700);
